@@ -1,12 +1,12 @@
 module.exports = {
   siteMetadata: {
-    // edit below
-    title: `Abstracted`,
+    title: `Abstracted in`,
     author: `Pushkar Anand`,
-    description: `Pushkar Anand's blog.`,
-    siteUrl: `https://blog.pushkaranand.com/`,
+    description: `Life from the eyes of a JS dev.`,
+    siteUrl: `https://abstracted.in/`,
     social: {
       twitter: `pushkar8723`,
+      github: `pushkar8723`
     },
   },
   plugins: [
@@ -70,11 +70,11 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `Gatsby Starter Blog`,
-        short_name: `GatsbyJS`,
+        name: `Abstracted.in`,
+        short_name: `Abstracted`,
         start_url: `/`,
-        background_color: `#ffffff`,
-        theme_color: `#663399`,
+        background_color: `#FFF4EC`,
+        theme_color: `#007acc`,
         display: `minimal-ui`,
         // edit below
         icon: `content/assets/gatsby-icon.png`,

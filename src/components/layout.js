@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "gatsby";
 import styled from "styled-components";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faCopyright } from '@fortawesome/free-solid-svg-icons';
 import { StaticQuery, graphql } from "gatsby";
-import { rhythm, scale } from "../utils/typography";
+import { rhythm, scale, resetTheme } from "../utils/typography";
 import Toggle from "../components/toggle";
 
 const Wrapper = styled.div`
@@ -83,6 +83,8 @@ function Layout(props) {
     const rootPath = `${__PATH_PREFIX__}/`;
     const blogPath = `${__PATH_PREFIX__}/`;
     let header;
+
+    useEffect(() => resetTheme(), []);
 
     if (location.pathname === rootPath || location.pathname === blogPath) {
         header = (
@@ -172,10 +174,10 @@ function Layout(props) {
                             }}
                         >
                             <Social>
-                                <a href={`https://twitter.com/${twitter}`} target="_blank">
+                                <a href={`https://twitter.com/${twitter}`} target="_blank" rel="noreferrer noopener">
                                     <FontAwesomeIcon icon={faTwitter} /> Twitter
                                 </a>{` | `}
-                                <a href={`https://github.com/${github}`} target="_blank">
+                                <a href={`https://github.com/${github}`} target="_blank" rel="noreferrer noopener">
                                     <FontAwesomeIcon icon={faGithub} /> Github
                                 </a>
                             </Social>

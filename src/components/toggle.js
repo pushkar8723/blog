@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -61,18 +61,24 @@ const Switch = styled.label`
 `;
 
 const Toggle = () => {
-    const theme = localStorage.getItem('theme');
-    const [dark, setDark] = useState(
-        theme
-        ? theme === 'dark'
-        : window.matchMedia('(prefers-color-scheme: dark)').matches
-    );
+    const [dark, setDark] = useState(false);
+    
+    useEffect(() => {
+        const theme = localStorage.getItem('theme');
+        setDark(
+            theme
+                ? theme === 'dark'
+                : window.matchMedia('(prefers-color-scheme: dark)').matches
+        );
+    }, []);
+
     const updateTheme = (event) => {
         const { checked } = event.target;
         localStorage.setItem('theme', checked ? 'dark' : 'light');
         setDark(checked);
         resetTheme();
     }
+    
     return (
         <Switch class="switch">
             <input type="checkbox" checked={dark} onChange={updateTheme}/>

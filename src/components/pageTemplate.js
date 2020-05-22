@@ -5,8 +5,12 @@ import Bio from "../components/bio";
 import Layout from "../components/layout";
 import SEO from "../components/seo";
 import PostLink from "../components/postLink";
-
 import { rhythm, scale } from "../utils/typography";
+import styled from 'styled-components';
+
+const SubPostContainer = styled.div`
+    margin-bottom: 1.45rem;
+`;
 
 const PageTemplate = ({ location, siteTitle, page, subpage, previous, next }) => {
     return (
@@ -33,43 +37,39 @@ const PageTemplate = ({ location, siteTitle, page, subpage, previous, next }) =>
                 {page.frontmatter.date}
             </p>
             <MDXRenderer>{page.body}</MDXRenderer>
-            <p>
+            <SubPostContainer>
                 {subpage && subpage.map(PostLink)}
-            </p>
+            </SubPostContainer>
             <hr
                 style={{
                     marginBottom: rhythm(1),
                 }}
             />
             <Bio />
-            {
-                (previous || next) && (
-                    <ul
-                        style={{
-                            display: `flex`,
-                            flexWrap: `wrap`,
-                            justifyContent: `space-between`,
-                            listStyle: `none`,
-                            padding: 0,
-                        }}
-                    >
-                        <li>
-                            {previous && (
-                                <Link to={`${previous.fields.slug}`} rel="prev">
-                                    ← {previous.frontmatter.title}
-                                </Link>
-                            )}
-                        </li>
-                        <li>
-                            {next && (
-                                <Link to={`${next.fields.slug}`} rel="next">
-                                    {next.frontmatter.title} →
-                                </Link>
-                            )}
-                        </li>
-                    </ul>
-                )
-            }
+            <ul
+                style={{
+                    display: `flex`,
+                    flexWrap: `wrap`,
+                    justifyContent: `space-between`,
+                    listStyle: `none`,
+                    padding: 0,
+                }}
+            >
+                <li>
+                    {previous && (
+                        <Link to={`${previous.fields.slug}`} rel="prev">
+                            ← {previous.frontmatter.title}
+                        </Link>
+                    )}
+                </li>
+                <li>
+                    {next && (
+                        <Link to={`${next.fields.slug}`} rel="next">
+                            {next.frontmatter.title} →
+                        </Link>
+                    )}
+                </li>
+            </ul>
         </Layout>
     )
 }

@@ -61,7 +61,7 @@ const Switch = styled.label`
 `;
 
 const Toggle = () => {
-    const [dark, setDark] = useState(false);
+    const [dark, setDark] = useState();
     
     useEffect(() => {
         const theme = localStorage.getItem('theme');
@@ -76,18 +76,31 @@ const Toggle = () => {
         const { checked } = event.target;
         localStorage.setItem('theme', checked ? 'dark' : 'light');
         setDark(checked);
-        resetTheme();
+        const root = window.document.documentElement;
+        if (checked) {
+            root.style.setProperty('--background-color', "#31313c");
+            root.style.setProperty('--primary-color', "#FFF4EC");
+            root.style.setProperty('--link-color', "#64baff");
+        } else {
+            root.style.setProperty('--background-color', "#FFF4EC");
+            root.style.setProperty('--primary-color', "hsla(0,0%,0%,0.9)");
+            root.style.setProperty('--link-color', "#007acc");
+        }
     }
     
-    return (
-        <Switch class="switch">
-            <input type="checkbox" checked={dark} onChange={updateTheme}/>
-            <span class="slider">
-                <FontAwesomeIcon icon={faMoon} style={{ color: 'white' }} />
-                <FontAwesomeIcon icon={faSun} style={{ color: 'white' }} />
-            </span>
-        </Switch>
-    );
+    if (typeof dark !== 'undefined') {
+        return (
+            <Switch>
+                <input type="checkbox" checked={dark} onChange={updateTheme}/>
+                <span class="slider">
+                    <FontAwesomeIcon icon={faMoon} style={{ color: 'white' }} />
+                    <FontAwesomeIcon icon={faSun} style={{ color: 'white' }} />
+                </span>
+            </Switch>
+        );
+    }
+
+    return null;
 };
 
 export default Toggle;

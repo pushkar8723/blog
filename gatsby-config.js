@@ -25,6 +25,13 @@ module.exports = {
       },
     },
     {
+        resolve: `gatsby-source-filesystem`,
+        options: {
+          path: `${__dirname}/content/page`,
+          name: `page`,
+        },
+      },
+    {
       resolve: `gatsby-source-filesystem`,
       options: {
         path: `${__dirname}/content/assets`,
@@ -77,7 +84,7 @@ module.exports = {
         theme_color: `#007acc`,
         display: `minimal-ui`,
         // edit below
-        icon: `content/assets/gatsby-icon.png`,
+        icon: `content/assets/favicon.png`,
       },
     },
     {

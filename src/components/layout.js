@@ -6,6 +6,7 @@ import { faTwitter, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faCopyright } from '@fortawesome/free-solid-svg-icons';
 import { StaticQuery, graphql } from "gatsby";
 import { rhythm, scale } from "../utils/typography";
+import Toggle from "../components/toggle";
 
 const Wrapper = styled.div`
     min-height: 100vh;
@@ -27,8 +28,45 @@ const Social = styled.div`
     }
 `;
 
-const footerQuery = graphql`
-    query FooterQuery {
+const PageLink = styled.a`
+    padding: 5px 0;
+    margin-right: 15px;
+    box-shadow: none;
+`;
+
+const Navbar = styled.nav`
+    margin-top: -1.5rem;
+    display: flex;
+    margin-bottom: 1rem;
+    justify-content: center;
+`;
+
+const Links = styled.div`
+    flex: 1;
+`;
+
+const ToggleContainer = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const pageQuery = graphql`
+    query Pages {
+        pages: allMdx(
+            filter: {fileAbsolutePath: {regex: "//page//"},
+            frontmatter: {parent: {eq: null}}}
+        ) {
+            edges {
+                node {
+                    frontmatter {
+                        title
+                    }
+                    fields {
+                        slug
+                    }
+                }
+            }
+        }
         site {
             siteMetadata {
                 social {
@@ -90,38 +128,54 @@ function Layout(props) {
     }
     return (
         <StaticQuery
-            query={footerQuery}
+            query={pageQuery}
             render={data => {
                 const { twitter, github } = data.site.siteMetadata.social;
+                const pages = data.pages.edges;
+                const width = rhythm(30);
                 return (
                     <Wrapper>
                         <div
                             style={{
                                 marginLeft: `auto`,
                                 marginRight: `auto`,
-                                width: rhythm(24),
+                                width,
                                 maxWidth: '100%',
                                 padding: `${rhythm(3 / 4)}`,
                                 flex: 1
                             }}
                         >
                             <header>{header}</header>
+                            <Navbar>
+                                <Links>
+                                {
+                                    pages.map(({ node }) => (
+                                        <PageLink
+                                            href={node.fields.slug}
+                                        >
+                                            {node.frontmatter.title}
+                                        </PageLink>
+                                    ))
+                                }
+                                </Links>
+                                <ToggleContainer><Toggle /></ToggleContainer>
+                            </Navbar>
                             <main>{children}</main>
                         </div>
                         <Footer
                             style={{
                                 marginLeft: `auto`,
                                 marginRight: `auto`,
-                                width: rhythm(24),
+                                width,
                                 maxWidth: '100%',
                                 padding: `0 ${rhythm(3 / 4)}`,
                             }}
                         >
                             <Social>
-                                <a href={`https://twitter.com/${twitter}`}>
+                                <a href={`https://twitter.com/${twitter}`} target="_blank">
                                     <FontAwesomeIcon icon={faTwitter} /> Twitter
                                 </a>{` | `}
-                                <a href={`https://github.com/${github}`}>
+                                <a href={`https://github.com/${github}`} target="_blank">
                                     <FontAwesomeIcon icon={faGithub} /> Github
                                 </a>
                             </Social>

@@ -110,7 +110,6 @@ function Layout(props) {
         header = (
             <h1
                 style={{
-                    ...scale(1.2),
                     marginBottom: rhythm(1.2),
                     marginTop: 0,
                 }}
@@ -165,7 +164,7 @@ function Layout(props) {
                                 marginRight: `auto`,
                                 width,
                                 maxWidth: '100%',
-                                padding: `${rhythm(5 / 4)}`,
+                                padding: `${rhythm(4 / 4)}`,
                                 flex: 1
                             }}
                         >
@@ -193,7 +192,7 @@ function Layout(props) {
                                 marginRight: `auto`,
                                 width,
                                 maxWidth: '100%',
-                                padding: `0 ${rhythm(3 / 4)}`,
+                                padding: `0 ${rhythm(4 / 4)}`,
                             }}
                         >
                             <Social>

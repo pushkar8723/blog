@@ -58,7 +58,8 @@ function Bio() {
                             <FontAwesomeIcon
                                 icon={faJsSquare}
                                 style={{
-                                    ...scale(0.3)
+                                    height: '20px',
+                                    ...scale(0.3),
                                 }}
                             /> <Description>developer in India.</Description>
                         </div>

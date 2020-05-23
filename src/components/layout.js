@@ -173,14 +173,14 @@ function Layout(props) {
                         >
                             <Social>
                                 <a href={`https://twitter.com/${twitter}`} target="_blank" rel="noreferrer noopener">
-                                    <FontAwesomeIcon icon={faTwitter} /> Twitter
+                                    <FontAwesomeIcon icon={faTwitter} style={{ width: '16px', height: '16px' }} /> Twitter
                                 </a>{` | `}
                                 <a href={`https://github.com/${github}`} target="_blank" rel="noreferrer noopener">
-                                    <FontAwesomeIcon icon={faGithub} /> Github
+                                    <FontAwesomeIcon icon={faGithub} style={{ width: '16px', height: '16px' }} /> Github
                                 </a>
                             </Social>
                             <div>
-                                <FontAwesomeIcon icon={faCopyright} /> {new Date().getFullYear()}
+                                <FontAwesomeIcon icon={faCopyright} style={{ width: '16px', height: '16px' }} /> {new Date().getFullYear()}
                             </div>
                         </Footer>
                     </Wrapper>

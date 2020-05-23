@@ -15,7 +15,7 @@ const MagicScriptTag = () => {
             } else {
                 root.style.setProperty('--background-color', "#FFF4EC");
                 root.style.setProperty('--primary-color', "hsla(0,0%,0%,0.9)");
-                root.style.setProperty('--link-color', "#007acc");
+                root.style.setProperty('--link-color', "#1a73af");
             }
         })()
     `;

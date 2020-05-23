@@ -1,12 +1,28 @@
 import React from "react";
 import { Link } from "gatsby";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faCopyright } from '@fortawesome/free-solid-svg-icons';
 import { StaticQuery, graphql } from "gatsby";
 import { rhythm, scale } from "../utils/typography";
 import Toggle from "../components/toggle";
+
+const GlobalStyles = createGlobalStyle`
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    .anchor-link {
+        box-shadow: none;
+        margin-left: -20px;
+        margin-right: 4px;
+    }
+
+    .anchor-link svg {
+        fill: var(--primary-color);
+    }
+`;
 
 const Wrapper = styled.div`
     min-height: 100vh;
@@ -135,6 +151,8 @@ function Layout(props) {
                 const pages = data.pages.edges;
                 const width = rhythm(30);
                 return (
+                    <>
+                    <GlobalStyles />
                     <Wrapper>
                         <div
                             style={{
@@ -186,6 +204,7 @@ function Layout(props) {
                             </div>
                         </Footer>
                     </Wrapper>
+                    </>
                 );
             }}
         >

@@ -6,7 +6,7 @@ const GithubBtns = ({ repo }) => {
         <>
         <GitHubButton
             href={`https://github.com/${repo}`}
-            data-color-scheme="no-preference: light; light: dark; dark: light;"
+            data-color-scheme="no-preference: light; light: light; dark: light;"
             data-icon="octicon-star"
             data-show-count="true"
             aria-label={`Star ${repo} on GitHub`}
@@ -16,7 +16,7 @@ const GithubBtns = ({ repo }) => {
         {` `}
         <GitHubButton
             href={`https://github.com/${repo}/fork`}
-            data-color-scheme="no-preference: light; light: dark; dark: light;"
+            data-color-scheme="no-preference: light; light: light; dark: light;"
             data-icon="octicon-repo-forked"
             data-show-count="true"
             aria-label={`Fork ${repo} on GitHub`}

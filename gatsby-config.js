@@ -17,6 +17,7 @@ module.exports = {
     `gatsby-plugin-offline`,
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-feed-mdx`,
+    `gatsby-plugin-smoothscroll`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -63,6 +64,12 @@ module.exports = {
           },
           {
             resolve: `gatsby-remark-smartypants`,
+          },
+          {
+            resolve: `gatsby-remark-autolink-headers`,
+            options: {
+                className: 'anchor-link'
+            }
           },
         ],
       },

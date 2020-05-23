@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { resetTheme } from '../utils/typography';
 
 const Switch = styled.label`
     position: relative;
@@ -92,7 +91,7 @@ const Toggle = () => {
         return (
             <Switch>
                 <input type="checkbox" checked={dark} onChange={updateTheme}/>
-                <span class="slider">
+                <span className="slider">
                     <FontAwesomeIcon icon={faMoon} style={{ color: 'white' }} />
                     <FontAwesomeIcon icon={faSun} style={{ color: 'white' }} />
                 </span>

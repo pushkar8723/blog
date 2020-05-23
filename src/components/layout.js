@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faCopyright } from '@fortawesome/free-solid-svg-icons';
 import { StaticQuery, graphql } from "gatsby";
-import { rhythm, scale, resetTheme } from "../utils/typography";
+import { rhythm, scale } from "../utils/typography";
 import Toggle from "../components/toggle";
 
 const Wrapper = styled.div`
@@ -64,6 +64,7 @@ const pageQuery = graphql`
                     fields {
                         slug
                     }
+                    id
                 }
             }
         }
@@ -151,6 +152,7 @@ function Layout(props) {
                                 {
                                     pages.map(({ node }) => (
                                         <PageLink
+                                            key={node.id}
                                             href={node.fields.slug}
                                         >
                                             {node.frontmatter.title}

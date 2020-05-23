@@ -7,6 +7,7 @@ import SEO from "../components/seo";
 import PostLink from "../components/postLink";
 import { rhythm, scale } from "../utils/typography";
 import styled from 'styled-components';
+import GithubBtns from '../components/githbubBtns';
 
 const SubPostContainer = styled.div`
     margin-bottom: 1.45rem;
@@ -27,6 +28,7 @@ const PageTemplate = ({ location, siteTitle, page, subpage, previous, next }) =>
             >
                 {page.frontmatter.description || page.excerpt}
             </div>
+            {page.frontmatter.github && <GithubBtns repo={page.frontmatter.github} />}
             <p
                 style={{
                     ...scale(-1 / 5),

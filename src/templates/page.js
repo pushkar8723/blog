@@ -39,6 +39,7 @@ export const pageQuery = graphql`
             frontmatter {
                 title
                 description
+                github
             }
         }
         subpage: allMdx(filter: {frontmatter: {parent: {eq: $slug }}}) {
@@ -50,6 +51,7 @@ export const pageQuery = graphql`
                     frontmatter {
                         title
                         description
+                        github
                     }
                 }
             }

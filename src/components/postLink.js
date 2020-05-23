@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from "gatsby";
 import { rhythm } from "../utils/typography";
+import GithubBtns from '../components/githbubBtns';
 
 const PostLink = ({ node }) => {
     const title = node.frontmatter.title || node.fields.slug
@@ -24,6 +25,7 @@ const PostLink = ({ node }) => {
                 }}
             />
             {node.frontmatter.date && <small>{node.frontmatter.date}</small>}
+            {node.frontmatter.github && <GithubBtns repo={node.frontmatter.github} />}
         </div>
     )
 }

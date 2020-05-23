@@ -12,7 +12,7 @@ const GlobalStyles = createGlobalStyle`
     html {
         scroll-behavior: smooth;
     }
-    
+
     .anchor-link {
         box-shadow: none;
         margin-left: -20px;
@@ -21,6 +21,11 @@ const GlobalStyles = createGlobalStyle`
 
     .anchor-link svg {
         fill: var(--primary-color);
+    }
+
+    blockquote {
+        color: var(--bockquote-color);
+        border-left: var(--bockquote-border);
     }
 `;
 
@@ -160,7 +165,7 @@ function Layout(props) {
                                 marginRight: `auto`,
                                 width,
                                 maxWidth: '100%',
-                                padding: `${rhythm(3 / 4)}`,
+                                padding: `${rhythm(5 / 4)}`,
                                 flex: 1
                             }}
                         >

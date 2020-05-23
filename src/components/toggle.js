@@ -75,15 +75,10 @@ const Toggle = () => {
         const { checked } = event.target;
         localStorage.setItem('theme', checked ? 'dark' : 'light');
         setDark(checked);
-        const root = window.document.documentElement;
         if (checked) {
-            root.style.setProperty('--background-color', "#31313c");
-            root.style.setProperty('--primary-color', "#FFF4EC");
-            root.style.setProperty('--link-color', "#64baff");
+            window.__setDarkTheme();
         } else {
-            root.style.setProperty('--background-color', "#FFF4EC");
-            root.style.setProperty('--primary-color', "hsla(0,0%,0%,0.9)");
-            root.style.setProperty('--link-color', "#1a73af");
+            window.__setLightTheme();
         }
     }
     

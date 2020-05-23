@@ -82,7 +82,7 @@ module.exports = {
         start_url: `/`,
         background_color: `#FFF4EC`,
         theme_color: `#007acc`,
-        display: `minimal-ui`,
+        display: `standalone`,
         // edit below
         icon: `content/assets/favicon.png`,
       },

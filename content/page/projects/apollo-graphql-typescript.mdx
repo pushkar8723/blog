@@ -1,0 +1,51 @@
+---
+title: apollo-graphql-typescript
+description: Template for serverless Apollo + GraphQL + TypeScript app deployed on Netlify.
+github: pushkar8723/apollo-graphql-typescript
+parent: /projects/
+priority: 3
+---
+
+If you have ever seen a post on the internet about a framework that is almost exactly what you wanted but then
+you tried to add that last missing piece to it. And it falls to the ground, shatters, and sends you into a deep
+depression where you question whether your existence is a waste? Then you will relate to me on this journey of mine.
+
+<p align="center">
+    <img alt="cards crumbling"
+        style="margin-bottom: 0"
+        src="https://user-images.githubusercontent.com/2996493/82763567-5e85e300-9e26-11ea-8d0f-67736ab2dbc5.gif" />
+    <br/>
+    <pre>
+    Image taken from <a href='https://tenor.com/view/magic-cards-house-house-of-cards-trick-gif-10297539'
+        target="_blank" rel="noreference noopener"
+    >Tenor</a>
+    </pre>
+</p>
+
+### What happened?
+
+I recently started working with Apollo GraphQL and wanted to do a small side project on it. I also wanted to host
+it for others to see but didn't want to pull up a new docker stack on my already overloaded server. Luckily, I found
+[this post](https://www.apollographql.com/docs/apollo-server/deployment/netlify/) describing exactly how to do that.
+The only problem is that there is no typescript included in the bundle. I thought 'No problem, I can add TypeScript to
+the bundle. How hard could it be?'.
+
+Never have I ever been so wrong in my entire life. You see Netlify has a [cli package](https://www.npmjs.com/package/netlify-cli).
+which helps in replicating a production-like environment on your local system without you having to set up a proxy between
+your client and [Netlify's lambda functions](https://docs.netlify.com/functions/overview/). And since the apollo server,
+in this case, runs a lambda function, it helped a lot. The only problem is that the cli package doesn't work with TypeScript.
+
+So, like a professional developer, I opened a new tab and searched 'how to add TypeScript to netlify-cli' on Google.
+50 tabs later I figured out that someway you have to make `netlify dev` command work with `netlify-lambda`. Doing that
+landed me into [some dependency issue](https://github.com/netlify/netlify-lambda/issues/142) and the author of the issue
+closed it stating that [he gave up on this issue](https://github.com/netlify/netlify-lambda/issues/142#issuecomment-513524350).
+
+### Then?
+
+Two days into this rabbit hole, I was also about to give up. But then I thought of dropping `netlify-lambda` and
+manually transpiling TypeScript files to JavaScript and then send those files to Netlify's CLI. It worked!
+So, I did what any developer who had a Eureka moment will do. Sleep! And so I slept peacefully at last. But when
+I woke up, I did some cleanup and pushed it GitHub so that anyone can use this as a template.
+
+You can just visit my [GitHub repository](https://github.com/pushkar8723/apollo-graphql-typescript), click on the
+'Deploy to Netlify' button to try this out.

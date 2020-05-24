@@ -1,0 +1,56 @@
+---
+title: paper-dropdown
+description: A wrapper for `paper-dropdown-menu` web-component written in Polymer
+github: pushkar8723/paper-dropdown
+parent: /projects/
+priority: 2
+---
+
+### Introduction
+
+`paper-dropdown` is a wrapper over [`paper-dropdown-menu`](https://www.webcomponents.org/element/@polymer/paper-dropdown-menu),
+the official dropdown component of [Paper Elements](https://www.webcomponents.org/collection/PolymerElements/paper-elements).
+It provides features like multi-select, search/filter of items, key-value pair, and two-way binding on value.
+
+### Why was this required?
+
+I made this more out of necessity. I liked working with Polymer and especially Paper Elements. It is a well-defined set of 
+web-components which I used to build multiple projects without any issues. However, `paper-dropdown-menu` was the one I
+didn't like to use at all (to put it mildly :P).
+
+Where all other components in the Polymer ecosystem supported 2-way binding, `paper-dropdown-menu` didn't. Which made it
+harder to use. Each time I needed to use it, I needed to add some boilerplate code to it. And based on the requirements,
+the code would vary slightly. A wrapper component was in order. I didn't get to write `paper-dropdown` immediately, I
+fiddled with `paper-dropdown-menu` for more than a year. Assuming that people smarter than me would do it eventually
+and I get to use their component. And there are a few components. But they didn't follow the design language or had too
+many dependencies for me to add them to my project.
+
+### What did I do?
+
+`paper-dropdown-menu` worked only on value, but often we have a requirement of a key-value pair. Where the value is shown
+to the user but what is selected is the key. For example, consider a dropdown for gender. The value shown to the
+user might be 'Male' and 'Female', but the value stored in form can be **M** and **F** respectively. I started with this as
+it was easiest to implement. Then added a client-side search.
+
+Finally, I decided to add a two-way binding feature. This was the main reason to create the component. All other Paper Elements
+follow a two-way binding scheme, but `paper-dropdown` required the developer to handle the value and change event. This was
+hindering the developer experience (as per me obviously).
+
+When I was done with it, I had to make a tough decision. Adding a multi-select option. Initially, I thought of creating a
+separate component for this purpose. But later decided to add it in the same component. A decision I don't know
+if it was right or wrong even today.
+
+I enhanced the developer experience a lot but at the same time reduced my confidence in the code because of the added
+complexity. It also introduced a problem of not being able to style the check-box as that was a hack.
+
+### Contributions
+
+Anyway, I think that the component did okay. It captured the interest of a few [people](https://github.com/pushkar8723/paper-dropdown/graphs/contributors).
+I also received [requests](https://github.com/pushkar8723/paper-dropdown/issues/14) to upgrade the component to
+newer versions of Polymer and one [Pull request](https://github.com/pushkar8723/paper-dropdown/pull/13) too. 
+
+### What do future hold for this component?
+
+With [`LitElement`](https://lit-element.polymer-project.org/) and [`mwc-components`](https://github.com/material-components/material-components-web-components)
+being developed. I think that this component will soon see its end of life. However, if `mwc-select` has any of these issues
+I will definitely create an `mwc-dropdown` component. So stay tuned!

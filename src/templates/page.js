@@ -8,6 +8,7 @@ class Page extends React.Component {
         const siteTitle = this.props.data.site.siteMetadata.title
         const subpage = this.props.data.subpage.edges;
         const location = this.props.location;
+        const { previous, next } = this.props.pageContext;
 
         return (
             <PageTemplate
@@ -15,7 +16,9 @@ class Page extends React.Component {
                     page,
                     siteTitle,
                     subpage,
-                    location
+                    location,
+                    previous,
+                    next
                 }}
             />
         )
@@ -42,7 +45,19 @@ export const pageQuery = graphql`
                 github
             }
         }
-        subpage: allMdx(filter: {frontmatter: {parent: {eq: $slug }}}) {
+        subpage: allMdx(
+            filter: {
+                frontmatter: {
+                    parent: {
+                        eq: $slug
+                    }
+                }
+            },
+            sort: {
+                order: ASC,
+                fields: frontmatter___priority
+            }
+        ) {
             edges {
                 node {
                     fields {

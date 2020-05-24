@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faCopyright } from '@fortawesome/free-solid-svg-icons';
 import { StaticQuery, graphql } from "gatsby";
-import { rhythm, scale } from "../utils/typography";
+import { rhythm } from "../utils/typography";
 import Toggle from "../components/toggle";
 
 const GlobalStyles = createGlobalStyle`

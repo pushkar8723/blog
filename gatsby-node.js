@@ -5,7 +5,7 @@ exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
   const blogPost = path.resolve(`./src/templates/blog-post.js`);
-  const page = path.resolve(`./src/templates/page.js`);
+  const pageComponent = path.resolve(`./src/templates/page.js`);
   return graphql(
     `
         {
@@ -26,8 +26,11 @@ exports.createPages = ({ graphql, actions }) => {
                 }
             },
             page: allMdx(
-                filter: {fileAbsolutePath: {regex: "//page//"}}
-                sort: { fields: [frontmatter___date], order: DESC }
+                filter: {
+                    fileAbsolutePath: {regex: "//page//"},
+                    frontmatter: {parent: {eq: null}}
+                },
+                sort: { fields: [frontmatter___priority], order: DESC }
                 limit: 1000
             ) {
                 edges {
@@ -37,6 +40,27 @@ exports.createPages = ({ graphql, actions }) => {
                         }
                         frontmatter {
                             title
+                        }
+                    }
+                }
+            },
+            subPage: allMdx(
+                filter: {
+                    fileAbsolutePath: {regex: "//page//"},
+                    frontmatter: {parent: {ne: null}}
+                
+                },
+                sort: { fields: [frontmatter___priority], order: DESC }
+                limit: 1000
+            ) {
+                edges {
+                    node {
+                        fields {
+                            slug
+                        }
+                        frontmatter {
+                            title
+                            parent
                         }
                     }
                 }
@@ -68,13 +92,40 @@ exports.createPages = ({ graphql, actions }) => {
 
     const pages = result.data.page.edges
 
-    pages.forEach((post, index) => {
+    pages.forEach((page, index) => {
+        const previous = index === pages.length - 1 ? null : pages[index + 1].node
+        const next = index === 0 ? null : pages[index - 1].node
 
         createPage({
-            path: `${post.node.fields.slug}`,
-            component: page,
+            path: `${page.node.fields.slug}`,
+            component: pageComponent,
             context: {
-                slug: post.node.fields.slug,
+                slug: page.node.fields.slug,
+                previous,
+                next
+            },
+        })
+    });
+
+    const subPages = result.data.subPage.edges
+
+    subPages.forEach((page, index) => {
+        let previous = index === subPages.length - 1 ? null : subPages[index + 1].node
+        if (previous && previous.frontmatter.parent !== page.node.frontmatter.parent) {
+            previous = null;
+        }
+        let next = index === 0 ? null : subPages[index - 1].node
+        if (next && next.frontmatter.parent !== page.node.frontmatter.parent) {
+            next = null;
+        }
+
+        createPage({
+            path: `${page.node.fields.slug}`,
+            component: pageComponent,
+            context: {
+                slug: page.node.fields.slug,
+                previous,
+                next
             },
         })
     });

@@ -8,9 +8,30 @@ import PostLink from "../components/postLink";
 import { rhythm, scale } from "../utils/typography";
 import styled from 'styled-components';
 import GithubBtns from '../components/githbubBtns';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 const SubPostContainer = styled.div`
     margin-bottom: 1.45rem;
+`;
+
+const PageNav = styled.ul`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+`;
+
+const NavLink = styled.li`
+    flex: 1;
+    display: flex;
+    align-items: center;
+
+    & a {
+        box-shadow: none;
+    }
 `;
 
 const PageTemplate = ({ location, siteTitle, page, subpage, previous, next }) => {
@@ -48,30 +69,28 @@ const PageTemplate = ({ location, siteTitle, page, subpage, previous, next }) =>
                 }}
             />
             <Bio />
-            <ul
-                style={{
-                    display: `flex`,
-                    flexWrap: `wrap`,
-                    justifyContent: `space-between`,
-                    listStyle: `none`,
-                    padding: 0,
-                }}
-            >
-                <li>
+            <PageNav>
+                <NavLink>
                     {previous && (
+                        <>
+                        <FontAwesomeIcon style={{ heigth: '16px', marginRight: '5px' }} icon={faChevronLeft} />
                         <Link to={`${previous.fields.slug}`} rel="prev">
-                            ← {previous.frontmatter.title}
+                            {previous.frontmatter.title}
                         </Link>
+                        </>
                     )}
-                </li>
-                <li>
+                </NavLink>
+                <NavLink style={{ textAlign: 'right', justifyContent: 'flex-end' }}>
                     {next && (
+                        <>
                         <Link to={`${next.fields.slug}`} rel="next">
-                            {next.frontmatter.title} →
+                            {next.frontmatter.title}
                         </Link>
+                        <FontAwesomeIcon style={{ heigth: '16px', marginLeft: '5px' }} icon={faChevronRight} />
+                        </>
                     )}
-                </li>
-            </ul>
+                </NavLink>
+            </PageNav>
         </Layout>
     )
 }

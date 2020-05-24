@@ -25,6 +25,7 @@ const bioQuery = graphql`
 
 const Container = styled.div`
     display: flex;
+    margin-bottom: 30px;
 `;
 
 const Description = styled.span`

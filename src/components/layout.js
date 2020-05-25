@@ -27,6 +27,10 @@ const GlobalStyles = createGlobalStyle`
         color: var(--bockquote-color);
         border-left: var(--bockquote-border);
     }
+
+    .task-list-item {
+        list-style: none;
+    }
 `;
 
 const Wrapper = styled.div`

@@ -48,9 +48,8 @@ exports.createPages = ({ graphql, actions }) => {
                 filter: {
                     fileAbsolutePath: {regex: "//page//"},
                     frontmatter: {parent: {ne: null}}
-                
                 },
-                sort: { fields: [frontmatter___priority], order: DESC }
+                sort: { fields: [frontmatter___parent, frontmatter___priority], order: DESC }
                 limit: 1000
             ) {
                 edges {
@@ -110,11 +109,11 @@ exports.createPages = ({ graphql, actions }) => {
     const subPages = result.data.subPage.edges
 
     subPages.forEach((page, index) => {
-        let previous = index === subPages.length - 1 ? null : subPages[index + 1].node
+        let previous = index === 0 ? null : subPages[index - 1].node
         if (previous && previous.frontmatter.parent !== page.node.frontmatter.parent) {
             previous = null;
         }
-        let next = index === 0 ? null : subPages[index - 1].node
+        let next = index === subPages.length - 1 ? null : subPages[index + 1].node
         if (next && next.frontmatter.parent !== page.node.frontmatter.parent) {
             next = null;
         }

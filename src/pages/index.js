@@ -53,7 +53,7 @@ export const pageQuery = graphql`
             }
         }
     },
-    page: allMdx(filter: {fileAbsolutePath: {regex: "//page//"}}) {
+    page: allMdx(filter: {fileAbsolutePath: {regex: "//page//"}}, sort: {fields: [frontmatter___priority], order: ASC}) {
         edges {
             node {
                 fields {

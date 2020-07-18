@@ -13,6 +13,11 @@ const GlobalStyles = createGlobalStyle`
         scroll-behavior: smooth;
     }
 
+    code {
+        color: var(--link-color);
+        font-size: 1rem;
+    }
+
     .anchor-link {
         box-shadow: none;
         margin-left: -20px;
@@ -26,10 +31,18 @@ const GlobalStyles = createGlobalStyle`
     blockquote {
         color: var(--bockquote-color);
         border-left: var(--bockquote-border);
+
+        & a {
+            color: var(--bockquote-color);
+        }
     }
 
     .task-list-item {
         list-style: none;
+    }
+
+    .vscode-highlight-line-highlighted {
+        background-color: rgba(192, 192, 192, 0.05) !important;
     }
 `;
 

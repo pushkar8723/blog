@@ -5,6 +5,7 @@ import Bio from "../components/bio";
 import Layout from "../components/layout";
 import SEO from "../components/seo";
 import PostLink from "../components/postLink";
+import TableOfContent from '../components/TableOfContent';
 import { rhythm, scale } from "../utils/typography";
 import styled from 'styled-components';
 import GithubBtns from '../components/githbubBtns';
@@ -42,6 +43,7 @@ const PageTemplate = ({ location, siteTitle, page, subpage, previous, next, slug
                 description={page.frontmatter.description || page.excerpt}
                 slug={slug}
             />
+            <TableOfContent items={page.tableOfContents.items} />
             <h1>{page.frontmatter.title}</h1>
             <div
                 style={{

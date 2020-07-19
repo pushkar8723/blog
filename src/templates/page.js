@@ -45,6 +45,7 @@ export const pageQuery = graphql`
                 description
                 github
             }
+            tableOfContents
         }
         subpage: allMdx(
             filter: {
@@ -69,6 +70,7 @@ export const pageQuery = graphql`
                         description
                         github
                     }
+                    tableOfContents
                 }
             }
         }

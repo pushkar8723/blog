@@ -73,6 +73,9 @@ function SEO({ description, lang, meta, keywords, title, slug }) {
             ? [{
                 name: `twitter:image`,
                 content: `${site.siteMetadata.siteUrl}${slug}twitter-card.jpg`,
+            }, {
+                name: `og:image`,
+                content: `${site.siteMetadata.siteUrl}${slug}twitter-card.jpg`,
             }] : []
         ),
       ]

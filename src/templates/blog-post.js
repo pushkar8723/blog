@@ -6,7 +6,7 @@ class BlogPostTemplate extends React.Component {
   render() {
     const page = this.props.data.mdx;
     const siteTitle = this.props.data.site.siteMetadata.title;
-    const { previous, next } = this.props.pageContext;
+    const { previous, next, slug } = this.props.pageContext;
     const location = this.props.location;
 
     return (
@@ -16,7 +16,8 @@ class BlogPostTemplate extends React.Component {
             siteTitle,
             previous,
             next,
-            location
+            location,
+            slug
         }}
       />
     )

@@ -71,6 +71,14 @@ module.exports = {
                 className: 'anchor-link'
             }
           },
+          {
+            resolve: `gatsby-remark-twitter-cards`,
+            options: {
+              titleFontSize: 96,
+              background: require.resolve('./content/assets/base.png'),
+              fontColor: '#ffffff', // defaults to white (#ffffff)
+            },
+          }
         ],
       },
     },

@@ -12,14 +12,17 @@ awesome work that you have done / been doing. And lo and behold, people figured 
 add GIFs to their profile.
 
 But I was like, GIFs are so 2010 and SVGs are the new cool. Only one problem, I don't know a thing about SVGs.
-I mean yes I have used it for icons and some illustrations. Sometimes generated one from some utility and snap
+I mean yes I have used it for icons and some illustrations. Sometimes generated one from some utility and snapped
 it onto a page. But I have never delved into how to create one from scratch and add animation to it.
 
 With nothing better to do, I started googling and was surprised to find that MDN has elaborate
 [documentation](https://developer.mozilla.org/en-US/docs/Web/SVG/Element) on SVG elements. Turns out, it
 is quite simple to add basic shapes. There are tags like `rect`, `circle`, `polygon`, `line`, and `polyline`,
-etc. Then simply write CSS to animate it. Neat! So now I can just move a logo on the screen and have
-boomers look at it for hours!
+etc. Then simply write CSS to animate it. 
+
+Neat! 
+
+So now I can just move a logo on the screen and have boomers look at it for hours!
 
 <p align="center">
     <img src="https://user-images.githubusercontent.com/2996493/87858782-0cf16480-c94e-11ea-8a96-b74bd009122d.gif" alt="office reference" />
@@ -27,7 +30,7 @@ boomers look at it for hours!
 
 But I digress. Back to animating SVG. Above mentioned shapes might be more than sufficient for a creative
 person to come up with some really cool illustration. But my creativity is fairly limited and so I decided to
-do a moving sine wave. And to compensate for my lack of creativity, I learned another tag called `path`, which
+do a moving wave. And to compensate for my lack of creativity, I learned another tag called `path`, which
 will help me create this wave.
 
 ### The Idea
@@ -86,29 +89,30 @@ to learn more.
 ![steps](https://user-images.githubusercontent.com/2996493/87860669-eab31300-c95c-11ea-8b40-a937a3c077b4.png)
 
 I divided the image into four quadrants and then planned to have a curve in the second and third quadrants, as
-shown in the first image. Then I can slightly move the tangents inwards to dampen the curve. Finally, I
-closed the path using lines. I moved the center point slightly to have curves that are slightly different.
-But making sure that the angle the tangents make with the vertical axis is the same. This ensures that the 
-curve looks continuous when I animate it. Finally, I ended up with the path as described below.
+shown in the first section in the image above. Then I can slightly move the tangents inwards to dampen the 
+curve. Finally, I closed the path using lines. I moved the center point slightly to have curves that are 
+slightly different. But making sure that the angle the tangents make with the vertical axis is the same. This
+ensures that the  curve looks continuous when I animate it. Finally, I ended up with the path as described
+below.
 
 ```HTML
 <path d="M0,160 C320,300,420,300,740,160 C1060,20,1120,20,1440,160 V0 H0" />
 ```
-If you are having trouble with understanding the path described above, look at the section in the image
+If you are having trouble with understanding the path described above, look at the last section in the image
 above. I have colour-coded each part of the path to make it more clear. You can also compare it with
 the section just above it to get an understanding of the points. If you were able to follow me till now,
 then we already sailed through the difficult waters.
 
 ### &lt;defs /&gt and &lt;use /&gt;
 
-Although, we can now just copy-paste the above path and create another with slight variations and call it
+Although, we can now just copy-paste the above path and create other waves with slight variations and call it
 a day. I want to introduce `defs` and `use` tag, that will help us do all these in a much more readable way.
 `defs` can be used to store graphical elements like `path` and then can be used later using `use` tag.
 
 All we need to do is give an `id` to our `path` and put it inside `defs` tag and then use it using `href`
 attribute in `use` tag as described below.
 
-```HTML {6-9}
+```HTML {6-9,11-11}
 <svg
   viewbox="0 0 1440 320"
   width="1440" height="320" 
@@ -124,7 +128,7 @@ attribute in `use` tag as described below.
 ```
 
 Right now a black wave is being rendered. To fix that we use `fill` and `fill-opacity` attribute in
-`path`. So our path becomes.
+`path`. So our updated path becomes as described below.
 
 ```HTML {2}
 <path
@@ -137,7 +141,7 @@ Right now a black wave is being rendered. To fix that we use `fill` and `fill-op
 ### Animation
 
 If you are already familiar with CSS animation, this section will be a cakewalk for you. So the idea is
-very simple. Have two of the waves that we created above stacked horizontally and then simply translate
+very simple. Have two of the waves (that we created above) stacked horizontally and then simply translate
 them from 0 to 100%. Rinse and repeat. Something like below.
 
 ![final](https://user-images.githubusercontent.com/2996493/87861537-d4a95080-c964-11ea-94c3-1eb5f300e100.png)

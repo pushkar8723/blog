@@ -50,7 +50,9 @@
     "typeface-montserrat": "0.0.54",
     "typography": "^0.16.19",
     "typography-theme-github": "^0.16.19",
-    "typography-theme-wordpress-2016": "^0.16.19"
+    "typography-theme-wordpress-2016": "^0.16.19",
+    "gatsby-remark-social-cards": "^0.4.1",
+    "gatsby-remark-twitter-cards": "^0.2.0"
   },
   "devDependencies": {
     "prettier": "^1.17.0"

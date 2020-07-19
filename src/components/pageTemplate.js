@@ -34,12 +34,13 @@ const NavLink = styled.li`
     }
 `;
 
-const PageTemplate = ({ location, siteTitle, page, subpage, previous, next }) => {
+const PageTemplate = ({ location, siteTitle, page, subpage, previous, next, slug }) => {
     return (
         <Layout location={location} title={siteTitle}>
             <SEO
                 title={page.frontmatter.title}
                 description={page.frontmatter.description || page.excerpt}
+                slug={slug}
             />
             <h1>{page.frontmatter.title}</h1>
             <div

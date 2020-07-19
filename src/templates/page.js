@@ -8,7 +8,7 @@ class Page extends React.Component {
         const siteTitle = this.props.data.site.siteMetadata.title
         const subpage = this.props.data.subpage.edges;
         const location = this.props.location;
-        const { previous, next } = this.props.pageContext;
+        const { previous, next, slug } = this.props.pageContext;
 
         return (
             <PageTemplate
@@ -18,7 +18,8 @@ class Page extends React.Component {
                     subpage,
                     location,
                     previous,
-                    next
+                    next,
+                    slug
                 }}
             />
         )

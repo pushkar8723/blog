@@ -9,9 +9,9 @@ featured: true
 
 So it all started with GitHub releasing a feature to add a Readme to your profile to showcase all the
 awesome work that you have done / been doing. And lo and behold, people figured out that it can be used to
-add GIFs to their profile.
+add GIFs to their profile. 🥳
 
-But I was like, GIFs are so 2010 and SVGs are the new cool. Only one problem, I don't know a thing about SVGs.
+But I was like, GIFs are so 2010 and SVGs are the new 💩. Only one problem, I don't know a thing about SVGs.
 I mean yes I have used it for icons and some illustrations. Sometimes generated one from some utility and snapped
 it onto a page. But I have never delved into how to create one from scratch and add animation to it.
 
@@ -20,9 +20,9 @@ With nothing better to do, I started googling and was surprised to find that MDN
 is quite simple to add basic shapes. There are tags like `rect`, `circle`, `polygon`, `line`, and `polyline`,
 etc. Then simply write CSS to animate it. 
 
-Neat! 
+Neat! 👍
 
-So now I can just move a logo on the screen and have boomers look at it for hours!
+So now I can just move a logo on the screen and have boomers look at it for hours! 💪
 
 <p align="center">
     <img src="https://user-images.githubusercontent.com/2996493/87858782-0cf16480-c94e-11ea-8a96-b74bd009122d.gif" alt="office reference" />
@@ -31,9 +31,9 @@ So now I can just move a logo on the screen and have boomers look at it for hour
 But I digress. Back to animating SVG. Above mentioned shapes might be more than sufficient for a creative
 person to come up with some really cool illustration. But my creativity is fairly limited and so I decided to
 do a moving wave. And to compensate for my lack of creativity, I learned another tag called `path`, which
-will help me create this wave.
+will help me create this wave. 🌊
 
-### The Idea
+### The Idea 🤓
 
 The idea was simple. Create multiple moving waves, each at a different speed, and make them a little see-through.
 The transparency will make the area darker where the waves intersect and thus there will be multiple
@@ -45,8 +45,8 @@ is enough space left for other things that I might want to add.
 
 ### &lt;path /&gt;
 
-So, I started by learning how to create a path. Which was quite simple. The path tag has a `d` attribute
-_(no pun intended)_. It was not hard to get _(pun intended)_. There are 6 different types of commands.
+So, I started by learning how to create a path. Which was quite simple. The path tag has a `d` attribute.
+It was not hard to get 😉. There are 6 different types of commands.
 
 - MoveTo
 - LineTo
@@ -58,8 +58,22 @@ _(no pun intended)_. It was not hard to get _(pun intended)_. There are 6 differ
 We only need to learn the first three. Each command is denoted with a letter followed by attributes which are
 points (x-y coordinates).
 
+<p align="center">
+    <img
+        src="https://user-images.githubusercontent.com/2996493/87868476-8c654f00-c9b3-11ea-9373-1510afac2b68.png"
+        alt="move"
+    />
+</p>
+
 *MoveTo* command is denoted by letter `M` or `m` followed by the point. So a `M10,10` would move the current
 position to the point `10,10`.
+
+<p align="center">
+    <img
+        src="https://user-images.githubusercontent.com/2996493/87868542-6a200100-c9b4-11ea-95b9-fa700d952063.png"
+        alt="line"
+    />
+</p>
 
 Similarly, *LineTo* has three commands.
 `L` or `l` creates a line from the current position to the given point. For example, `L10,10` would create a line
@@ -67,7 +81,6 @@ from the current position to `10,10`. `H` or `h` would create a horizontal line 
 lastly, `V` or `v` would create a vertical line to the given y coordinate.
 
 Cubic Bézier Curve is slightly more complex. It is denoted by letter `C` or `c` and takes 3 points as arguments.
-The following image will help you understand how it works.
 
 <p align="center">
     <img
@@ -84,7 +97,33 @@ position. And `x3` `y3` is the endpoint. To know more about Cubic Bézier Curve 
 You can also refer [MDN Tutorial on the SVG path](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths)
 to learn more.
 
-### Implementation
+To solidify what we learned right now, lets decode the following SVG.
+
+```HTML
+<svg
+  viewbox="0 0 100 100"
+  width="100" height="100" 
+  xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M10,10 V50 C10,90,90,90,90,50 V10 H10 V50"
+  />
+</svg>
+```
+
+The code above results in SVG shown below. For clarity, put a green border around the image.
+
+<p align="center">
+    <img width="110" alt="example svg"
+    src="https://user-images.githubusercontent.com/2996493/87868661-e9fa9b00-c9b5-11ea-8f52-e0b0345d67bc.png"
+    />
+</p>
+
+Our path starts at `0,0` and the first command `M10,10` moves our point to `10,10`. Then the second command
+`V50` creates a vertical path to `10,50`. Next `C10,90,90,90,90,50` create a curve with `10,90` and `90,90`
+as our reference points and `90,50` is the endpoint. Then `V10` creates a path to `90,10`. Next, `H10`
+creates a path to `10,10` and finally `V50` closes the path and we get our final image. Simple right? 👌
+
+### Implementation ✍️
 
 ![steps](https://user-images.githubusercontent.com/2996493/87860669-eab31300-c95c-11ea-8b40-a937a3c077b4.png)
 
@@ -101,7 +140,7 @@ below.
 If you are having trouble with understanding the path described above, look at the last section in the image
 above. I have colour-coded each part of the path to make it more clear. You can also compare it with
 the section just above it to get an understanding of the points. If you were able to follow me till now,
-then we already sailed through the difficult waters.
+then we already sailed through the difficult waters. 😁
 
 ### &lt;defs /&gt and &lt;use /&gt;
 
@@ -138,13 +177,15 @@ Right now a black wave is being rendered. To fix that we use `fill` and `fill-op
 />
 ```
 
-### Animation
+### Animation 🤤
 
 If you are already familiar with CSS animation, this section will be a cakewalk for you. So the idea is
 very simple. Have two of the waves (that we created above) stacked horizontally and then simply translate
 them from 0 to 100%. Rinse and repeat. Something like below.
 
-![final](https://user-images.githubusercontent.com/2996493/87861537-d4a95080-c964-11ea-94c3-1eb5f300e100.png)
+<p align="center">
+    <img src="https://media0.giphy.com/media/ibWnlk2h33g705GlDW/giphy.gif" alt="final" />
+</p>
 
 Here the black box represents the viewport of the user.
 
@@ -182,11 +223,16 @@ animation to our `wave` class.
 </svg>
 ```
 
-Finally, I added two more similar waves, the only difference is that I used `scaleY` transform CSS property
+Finally, I added two more similar waves, the only difference is that I used `scaleY` in transform CSS property
 to have a different amplitude of the waves. You can check out the final SVG on
 [CodePen](https://codepen.io/pushkar8723/pen/eYJQVvE).
 
-### Bonus Tips
+<iframe height="265" style="width: 100%;" scrolling="no" title="Waves" src="https://codepen.io/pushkar8723/embed/eYJQVvE?height=265&theme-id=dark&default-tab=html,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href='https://codepen.io/pushkar8723/pen/eYJQVvE'>Waves</a> by Pushkar Anand
+  (<a href='https://codepen.io/pushkar8723'>@pushkar8723</a>) on <a href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+### Bonus Tips 🤗
 
 I also added a few texts on the banner. This could have been simple as SVG supports Google Fonts but the
 [content security policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) of GitHub doesn't allow
@@ -194,7 +240,7 @@ fonts to be downloaded from external sources. Thus, I used
 [this utility](https://danmarshall.github.io/google-font-to-svg-path/) to create an SVG path for me which
 I copied in my final SVG.
 
-### Conclusion
+### Conclusion 👨‍💻
 
 I barely scratched the surface of SVG animation but was able to create something which I think is cool.
 Was there a better way to do it? Is there some other interesting thing that I should explore? Do let me

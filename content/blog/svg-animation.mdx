@@ -2,6 +2,7 @@
 title: Learning SVG animation to spice up my GitHub Profile
 date: "2020-07-19"
 description: "Coz nothing says 'professional' better than a flashing animation."
+keywords: "SVG,Animation,CSS,GitHub"
 featured: true
 ---
 
@@ -110,7 +111,7 @@ To solidify what we learned right now, lets decode the following SVG.
 </svg>
 ```
 
-The code above results in SVG shown below. For clarity, put a green border around the image.
+The code above results in SVG shown below. For clarity, I have put a green border around the image.
 
 <p align="center">
     <img width="110" alt="example svg"
@@ -151,7 +152,7 @@ a day. I want to introduce `defs` and `use` tag, that will help us do all these 
 All we need to do is give an `id` to our `path` and put it inside `defs` tag and then use it using `href`
 attribute in `use` tag as described below.
 
-```HTML {6-9,11-11}
+```HTML{6-9,11-11}
 <svg
   viewbox="0 0 1440 320"
   width="1440" height="320" 
@@ -169,7 +170,7 @@ attribute in `use` tag as described below.
 Right now a black wave is being rendered. To fix that we use `fill` and `fill-opacity` attribute in
 `path`. So our updated path becomes as described below.
 
-```HTML {2}
+```HTML{2}
 <path
   fill="#0099ff" fill-opacity="0.2"
   id='sineWave'
@@ -193,7 +194,7 @@ To achieve this, we add another `use` tag but with `x` attribute set to `-100%`.
 of these `use` tags. And create an animation where we translate x from `0%` to `100%` and apply this
 animation to our `wave` class.
 
-```HTML {6-18,26-26}
+```HTML{6-18,26-26}
 <svg
   viewbox="0 0 1440 320"
   width="1440" height="320" 
@@ -227,7 +228,7 @@ Finally, I added two more similar waves, the only difference is that I used `sca
 to have a different amplitude of the waves. You can check out the final SVG on
 [CodePen](https://codepen.io/pushkar8723/pen/eYJQVvE).
 
-<iframe height="265" style="width: 100%;" scrolling="no" title="Waves" src="https://codepen.io/pushkar8723/embed/eYJQVvE?height=265&theme-id=dark&default-tab=html,result" frameborder="no" allowtransparency="true" allowfullscreen="true">
+<iframe height="265" style="width: 100%;" scrolling="no" title="Waves" src="https://codepen.io/pushkar8723/embed/eYJQVvE?height=265&theme-id=dark&default-tab=result" frameborder="no" allowtransparency="true" allowfullscreen="true">
   See the Pen <a href='https://codepen.io/pushkar8723/pen/eYJQVvE'>Waves</a> by Pushkar Anand
   (<a href='https://codepen.io/pushkar8723'>@pushkar8723</a>) on <a href='https://codepen.io'>CodePen</a>.
 </iframe>
@@ -238,7 +239,7 @@ I also added a few texts on the banner. This could have been simple as SVG suppo
 [content security policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) of GitHub doesn't allow
 fonts to be downloaded from external sources. Thus, I used 
 [this utility](https://danmarshall.github.io/google-font-to-svg-path/) to create an SVG path for me which
-I copied in my final SVG.
+I copied in my final SVG. Check it out on my [GitHub Profile](https://github.com/pushkar8723).
 
 ### Conclusion 👨‍💻
 

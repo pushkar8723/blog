@@ -45,6 +45,10 @@ function SEO({ description, lang, meta, keywords, title, slug }) {
           content: title,
         },
         {
+            name: `author`,
+            content: site.siteMetadata.author || 'Pushkar Anand',
+        },
+        {
           property: `og:description`,
           content: metaDescription,
         },
@@ -74,7 +78,8 @@ function SEO({ description, lang, meta, keywords, title, slug }) {
                 name: `twitter:image`,
                 content: `${site.siteMetadata.siteUrl}${slug}twitter-card.jpg`,
             }, {
-                name: `og:image`,
+                name: `image`,
+                property: `og:image`,
                 content: `${site.siteMetadata.siteUrl}${slug}twitter-card.jpg`,
             }] : []
         ),

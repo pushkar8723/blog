@@ -1,0 +1,43 @@
+---
+title: Creating a fullstack Serverless App Template
+date: "2020-05-26"
+description: I created a template that will enable developers to quickly bootstrap an fullstack serverless application (React + Apollo + GraphQL + TypeScript + Netlify).
+tags: netlify, fullstack, serverless, React, Apollo, GraphQL, TypeScript
+---
+
+### What I built
+
+I created a template that will enable developers to quickly bootstrap an Apollo GraphQL + TypeScript project,
+which can be deployed in a serverless fashion on Netlify. Also, with the FaunaDB addon, it will enable developers
+to have a stateful app. Thus, developers can concentrate on core application logic and scale the application as
+their app grows at the same time they don't have to sacrifice on security.
+
+Netlify functions enable developers to deploy lambda functions. They have a template for Apollo GraphQL as well.
+However, this template doesn't support TypeScript. Limiting the advantages of GraphQL to just querying and
+mutating data. Having TypeScript helps developers to change code with reliability. This also enhances overall
+experience with GraphQL as schema defined in GraphQL can be directly exported to TypeScript types.
+
+For such cases, Netlify recommends using legacy command `netlify-lambda` command. But people ran into other
+issues using it. However, I integrated TypeScript in the build process instead and so didn't need to use
+`netifly-lambda`.
+
+### Demo 
+[Application](https://apollo-graphql-typescript.netlify.app/)
+
+[GraphQL PlayGround](https://apollo-graphql-typescript.netlify.app/.netlify/functions/graphql)
+
+[GitHub Repository](https://github.com/pushkar8723/apollo-graphql-typescript)
+
+### Additional Resources/Info 
+https://community.netlify.com/t/getting-typescript-to-work-with-netlify-functions/6198
+https://community.netlify.com/t/does-netlify-dev-support-typescript/3842
+
+**UPDATE:**
+
+I further integrated `graphql-codegen` to automatically generate TypeScript types for GraphQL schema.
+And also integrated `eslint` and `husky` to introduce lint checks and validate them before each commit.
+
+**UPDATE 2:**
+
+I created a demo project using this template and also integrated FaunaDB addon on
+[GitHub](https://github.com/pushkar8723/social-board).

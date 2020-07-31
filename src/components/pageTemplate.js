@@ -1,4 +1,5 @@
 import React from 'react';
+import { MDXProvider } from '@mdx-js/react';
 import { MDXRenderer } from "gatsby-plugin-mdx";
 import { Link } from "gatsby";
 import Bio from "../components/bio";
@@ -11,6 +12,7 @@ import styled from 'styled-components';
 import GithubBtns from '../components/githbubBtns';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import ExternalLink from './ExternalLink';
 
 const SubPostContainer = styled.div`
     margin-bottom: 1.45rem;
@@ -41,6 +43,7 @@ const PageTemplate = ({ location, siteTitle, page, subpage, previous, next, slug
             <SEO
                 title={page.frontmatter.title}
                 description={page.frontmatter.description || page.excerpt}
+                keywords={page.frontmatter.keywords}
                 slug={slug}
             />
             <TableOfContent items={page.tableOfContents.items} />
@@ -62,7 +65,13 @@ const PageTemplate = ({ location, siteTitle, page, subpage, previous, next, slug
             >
                 {page.frontmatter.date}
             </p>
-            <MDXRenderer>{page.body}</MDXRenderer>
+            <MDXProvider
+                components={{
+                    a: ExternalLink
+                }}
+            >
+                <MDXRenderer>{page.body}</MDXRenderer>
+            </MDXProvider>
             <SubPostContainer>
                 {subpage && subpage.map(PostLink)}
             </SubPostContainer>

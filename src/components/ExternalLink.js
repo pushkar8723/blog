@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default function ExternalLink(props) {
-    if (props.href.includes(window.location.host)) {
+    if (props.href.startsWith('/')) {
         return <a {...props} />;
     }
     return <a {...props} target="_blank" rel="noopener noreferrer"/>;

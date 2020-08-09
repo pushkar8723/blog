@@ -218,8 +218,8 @@ function Layout(props) {
                                 </a>{` | `}
                                 <a href={`https://github.com/${github}`} target="_blank" rel="noreferrer noopener">
                                     <FontAwesomeIcon icon={faGithub} style={{ width: '16px', height: '16px' }} /> Github
-                                </a>
-                                <a href={`https://abstracted.in/rss.xml`} target="_blank" rel="noreferrer noopener">
+                                </a>{` | `}
+                                <a href="/rss.xml">
                                     <FontAwesomeIcon icon={faRss} style={{ width: '16px', height: '16px' }} /> RSS
                                 </a>
                             </Social>

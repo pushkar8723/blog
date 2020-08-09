@@ -3,7 +3,7 @@ import { Link } from "gatsby";
 import styled, { createGlobalStyle } from "styled-components";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter, faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faCopyright } from '@fortawesome/free-solid-svg-icons';
+import { faCopyright, faRss } from '@fortawesome/free-solid-svg-icons';
 import { StaticQuery, graphql } from "gatsby";
 import { rhythm } from "../utils/typography";
 import Toggle from "../components/toggle";
@@ -218,6 +218,9 @@ function Layout(props) {
                                 </a>{` | `}
                                 <a href={`https://github.com/${github}`} target="_blank" rel="noreferrer noopener">
                                     <FontAwesomeIcon icon={faGithub} style={{ width: '16px', height: '16px' }} /> Github
+                                </a>{` | `}
+                                <a href="/rss.xml">
+                                    <FontAwesomeIcon icon={faRss} style={{ width: '16px', height: '16px' }} /> RSS
                                 </a>
                             </Social>
                             <div>

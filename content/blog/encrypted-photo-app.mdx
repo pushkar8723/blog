@@ -1,0 +1,208 @@
+---
+title: Creating an End-to-End Encrypted Web App
+date: "2021-03-13"
+description: "When working 40 hours a week isn't painful enough."
+keywords: "Encrypted,Photo,Video,Storage,Streaming"
+featured: true
+---
+
+It all started when my friend approached me for a web app. You see, he was spooked by the fact
+that all our photos are automatically uploaded to some cloud storage application without any encryption.
+And so all our private moments are available for corporate companies to train their ML model. Thus he set
+out to create an end-to-end encrypted photo storage application. He already had a native iOS and Android
+app in place (which he created using Fluter) when he approached me. So, all APIs and backend systems were
+already in place. Even a working native application was there. I liked the idea and agreed to help him out.
+Putting my 6+ years of experience in development to use, I grossly underestimated the size of the project. 😝
+
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/2996493/110342773-cc1b9c80-8051-11eb-8955-3305325a33e0.png" alt="Estimations" width="50%"/>
+</p>
+
+As soon as I started working on it, I realized that this isn't a trivial web app where you can call
+a few APIs, show nice pictures to the user and call it a day. Since it is an end-to-end encrypted application,
+I had to decrypt everything after downloading them and then present it to the user. I can not rely on a
+blob/object storage to resize the images. All of this has to be done on the client-side without compromising
+on the speed. To make things worse, videos were also part of MVP! 😓
+
+### Challenges 😪
+
+The main challenge of such an application is that whatever heavy processing we do on the server in a
+regular photos/videos application, cannot be done here as by the time a file reaches the server, it is
+already encrypted. Thus everything has to be done on client-side. Fortunately, most of the problem was
+solved for the app and the only re-implementation for the web was required. However, since web apps don't
+have access to the filesystem (without using an experimental API), and encryption / decryption of photos
+and videos would be a taxing process, I had to use every tool that I have to ensure performance.
+
+Very early on I offloaded all encryption and decryption to a web worker. Thus, the main thread was free
+of the most taxing part of the application. It also reduced the time it took to encrypt/decrypt a file.
+I also used [Comlink](https://github.com/GoogleChromeLabs/comlink) to communicate with the web worker.
+Initially, we were using AES encryption but later switched to [libsodium](https://github.com/jedisct1/libsodium).
+The code for this was quite simple.
+
+First we create a worker as follows.
+
+```TypeScript
+// Worker File
+import * as Comlink from 'comlink';
+
+export class Crypto {
+    async encrypt(data, key) {
+        // Encryption Logic
+    }
+
+    async decrypt(data, nonce, key) {
+        // Decryption Logic
+    }
+}
+
+Comlink.expose(Crypto);
+```
+
+Then we simply load and instantiate the worker using Comlink.
+
+```TypeScript
+// Application File where the worker is used.
+import * as Comlink from 'comlink';
+
+const CryptoWorker = Comlink.wrap(
+    new Worker('worker.js', { type: 'module' })
+);
+const worker = await new CryptoWorker();
+
+await worker.decrypt(data, nonce, key);
+```
+
+Then, we decided that we would cache any thumbnail that we load on UI in a [CacheStorage](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage).
+This way we don't have to re-download and decrypt the image. Improving our second load time. CacheStorage was ideal
+for this as it is accessible everywhere (main thread, webworker and service workers) and also has responds with
+a `Response` object. We implemented the entire thing just using following few lines
+
+```TypeScript
+// Open cache named `thumbs`
+const cache = await caches.open('thumbs');
+
+// Check if we already have thumbnail for the file id
+const cacheResp: Response = await cache.match(file.id.toString());
+
+if (cacheResp) {
+    // Return cached response
+    return URL.createObjectURL(await cacheResp.blob());
+}
+
+// We don't have it in cache. Lets fetch and decrypt it
+const fileData = await fetch(`https://sever/path/to/file?id=${file.id}`);
+const decrypted = await worker.decrypt(fileData, file.nonce, file.key);
+
+// Put it in cache for future use
+await cache.put(
+    file.id.toString(),
+    new Response(new Blob([decrypted]))
+);
+
+// Return the object URL
+return URL.createObjectURL(new Blob([decrypted]));
+```
+
+Also, a good UX for the gallery was a must-have. This is the part where users would interact most often.
+We wanted it to support all gestures available on a native application like swipe, pinch zoom, and pan, etc.
+And should also scale to the desktop as well as mobile. For this, we looked at many open-source libraries but
+found out that we didn't like the UX on most of them and all of them come with some sacrifices. Finally,
+we settled for [PhotoSwipe](https://photoswipe.com/). It fit most of our use case. The only part missing
+was the infinite loading of pages.
+
+Though they have it listed as a feature on their website, we found out that the already loaded images
+are not removed from the DOM, instead, new pages are just added. This wouldn't be ideal for us as a user can
+have thousands of images and we would want him to be able to scroll through them quickly. Thus we used
+[react-window](https://react-window.now.sh/) and CSS grid to create our gallery layout and let PhotoSwipe
+handle the interaction once the user clicks on an image. Making our app performant.
+
+We used [NextJS](https://nextjs.org/) for the sweet out of the box SSR.
+
+### But we weren't done yet 😶
+
+Everything was going great and we even rolled out a beta version for some users to test, when we started
+seeing random tab crashes on browser. Definitely there was some memory leak somewhere in the application.
+
+After analyzing the behavior, I noticed that it was happening when my friend tried to open a few video files.
+Then it hit me, all our encryption and decryption were happening in memory! Which was good enough for small
+files on which I had tested. But for a large file, the tab would crash as it would run out of the memory limit. 
+
+We quickly checked the file sizes and found it was anywhere from 400MB to 1GB. This was not going to work on web.
+On app we had access to filesystem and so we can process it chunk by chunk and append to file. But on web we don't
+have access to filesystem and so a different approach was required. Putting everything behind an experimental API
+that would work only in Chrome is not the experience we wanted to deliver.
+
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/2996493/110344031-19e4d480-8053-11eb-8d5e-5c5fc2621513.jpeg" alt="Low Confidence" />
+</p>
+
+And so we kept looking. By luck I stumbled on [this awesome podcast]([https://www.youtube.com/watch?v=G9PpImUEeUA](https://www.youtube.com/watch?v=G9PpImUEeUA)). 
+Streams was the answer! Instead of putting everything in memory and then encrypting/decrypting the file,
+we can do it with [Readable Streams](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream).
+However, axios (the library that we were using for making API calls) didn't have support for this. So,
+we had to resort to fetch APIs. Not a bad compromise I would say.
+
+Finally, I refactored my code to something like below:
+
+```TypeScript
+// Get the file
+const resp = await fetch(`https://sever/path/to/file?id=${file.id}`);
+
+// Get reader to be used in readable stream.
+const reader = resp.body.getReader();
+
+// Create a readable stream.
+const stream = new ReadableStream({
+    async start(controller) {
+        // The following function handles each data chunk
+        function push() {
+            reader.read().then(async ({ done, value }) => {
+                if (!done) {
+                    // Decrypt chunk
+                    const decryptedData = await worker.decryptChunk(value);
+
+                    // Add decrypted data to stream
+                    controller.enqueue(decryptedData);
+
+                    // Is there more data to read?
+                    push();
+                } else {
+                    // All done, rest!
+                    controller.close();
+                }
+            });
+        };
+
+        push();
+    }
+});
+return URL.createObjectURL(await new Response(stream).blob());
+```
+
+I still had doubts whether this would work. However, once the video loaded without the tab crashing, I was in the seventh heaven.
+
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/2996493/110344533-94155900-8053-11eb-86d7-c730ae32f205.jpg" alt="I believe I can fly" />
+</p>
+
+### And miles to go before I sleep 🚶‍♂️
+
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/2996493/110343717-c70b1d00-8052-11eb-89c6-aaad65454b53.jpg" alt="ToDo" />
+</p>
+
+I am happy with the progress that we have made with the project. I knew about these technologies that I used
+from various conference talk / Youtube videos. But implementing them was a completely different ball game.
+Learned about WebWorkers, Comlink, CacheStorage, and ReadableStream. Worked with multiple libraries and filled in
+where ever they fall short. All this without sacrificing on UX, usability and performance.
+
+Still, there are few things that I would like to solve. Right now the entire video needs to be downloaded before
+it can be played. Ideally, I would like it to be able to stream. For this I experimented with
+[MediaSource](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource). However, I am currently stuck on
+specifying the codec for videos. Do let me know if you know about something that can help me out with it.
+I would love to hear from you. 😊
+
+I would also like to add service worker for offline caching and convert it to a PWA.
+
+You can check out the app at [photos.ente.io]([https://photos.ente.io/](https://photos.ente.io/)) or can also
+checkout the [code]([https://github.com/ente-io/bada-frame](https://github.com/ente-io/bada-frame)).

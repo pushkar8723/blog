@@ -1,5 +1,5 @@
 ---
-title: Creating an End-to-End Encrypted Web App
+title: Creating an End-to-End Encrypted alternative to Google Photos
 date: "2021-03-13"
 description: "When working 40 hours a week isn't painful enough."
 keywords: "Encrypted,Photo,Video,Storage,Streaming"
@@ -8,10 +8,10 @@ featured: true
 
 It all started when my friend approached me for a web app. You see, he was spooked by the fact
 that all our photos are automatically uploaded to some cloud storage application without any encryption.
-And so all our private moments are available for corporate companies to train their ML model. Thus he set
+And so all our private moments are available for corporate companies to train their ML models. Thus he set
 out to create an end-to-end encrypted photo storage application. He already had a native iOS and Android
 app in place (which he created using Fluter) when he approached me. So, all APIs and backend systems were
-already in place. Even a working native application was there. I liked the idea and agreed to help him out.
+already in place. Even a working native application was there to play around. I liked the idea and agreed to help him out.
 Putting my 6+ years of experience in development to use, I grossly underestimated the size of the project. 😝
 
 <p align="center">
@@ -29,7 +29,7 @@ on the speed. To make things worse, videos were also part of MVP! 😓
 Most of the problem was solved for the app and the only re-implementation for the web was required.
 However, since web apps don't have access to the filesystem (without using an experimental API), and
 encryption / decryption of photos and videos would be a taxing process, I had to use every tool that
-I have to ensure performance.
+I had to ensure performance.
 
 Very early on I offloaded all encryption and decryption to a web worker. Thus, the main thread was free
 of the most taxing part of the application. It also reduced the time it took to encrypt/decrypt a file.
@@ -105,7 +105,7 @@ Also, a good UX for the gallery was a must-have. This is the part where users wo
 We wanted it to support all gestures available on a native application like swipe, pinch zoom, and pan, etc.
 And should also scale to the desktop as well as mobile. For this, we looked at many open-source libraries but
 found out that we didn't like the UX on most of them and all of them come with some sacrifices. Finally,
-we settled for [PhotoSwipe](https://photoswipe.com/). It fit most of our use case. The only part missing
+we settled for [PhotoSwipe](https://photoswipe.com/). It fit most of our use cases. The only part missing
 was the infinite loading of pages.
 
 Though they have it listed as a feature on their website, we found out that the already loaded images
@@ -200,16 +200,14 @@ where ever they fall short. All this without sacrificing on UX, usability and pe
 
 Still, there are few things that I would like to solve. Right now the entire video needs to be downloaded before
 it can be played. Ideally, I would like it to be able to stream. For this I experimented with
-[MediaSource](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource). However, I am currently stuck on
-specifying the codec for videos. Do let me know if you know about something that can help me out with it.
-I would love to hear from you. 😊
+[MediaSource](https://developer.mozilla.org/en-US/docs/Web/API/MediaSource). MediaSource requires codecs to be
+specified explicitly, which I don't have. Hence, I am stuck. Please let me know if you have any ideas on how
+I could work around this. I would love to hear from you. 😊
 
-Share is a feature which I feel is also very essential for this application.
+Sharing is a feature which I feel is also very essential for this application. Just API integration is left for this.
 I would also like to add [Service worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers)
 with [Workbox](https://developers.google.com/web/tools/workbox) for offline caching and convert it to a PWA which
 can then be installed on mobile and desktop.
 
-You can check out the web app at [photos.ente.io](https://photos.ente.io/) or can also
-checkout the [code](https://github.com/ente-io/bada-frame).
-[Android](https://play.google.com/store/apps/details?id=io.ente.photos) and [iOS](https://apps.apple.com/in/app/ente-photos/id1542026904)
-apps are also available to play around. 😊
+The source code for all of this is available [here](https://github.com/ente-io/bada-frame).
+If you're curious about the product, check out [ente.io](https://ente.io).😊

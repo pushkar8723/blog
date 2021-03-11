@@ -15,7 +15,7 @@ already in place. Even a working native application was there. I liked the idea 
 Putting my 6+ years of experience in development to use, I grossly underestimated the size of the project. 😝
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/2996493/110342773-cc1b9c80-8051-11eb-8955-3305325a33e0.png" alt="Estimations" width="50%"/>
+    <img src="https://user-images.githubusercontent.com/2996493/110783956-176ebe80-828f-11eb-8462-9fad068ac98e.jpg" alt="Estimations" />
 </p>
 
 As soon as I started working on it, I realized that this isn't a trivial web app where you can call
@@ -26,12 +26,10 @@ on the speed. To make things worse, videos were also part of MVP! 😓
 
 ### Challenges 😪
 
-The main challenge of such an application is that whatever heavy processing we do on the server in a
-regular photos/videos application, cannot be done here as by the time a file reaches the server, it is
-already encrypted. Thus everything has to be done on client-side. Fortunately, most of the problem was
-solved for the app and the only re-implementation for the web was required. However, since web apps don't
-have access to the filesystem (without using an experimental API), and encryption / decryption of photos
-and videos would be a taxing process, I had to use every tool that I have to ensure performance.
+Most of the problem was solved for the app and the only re-implementation for the web was required.
+However, since web apps don't have access to the filesystem (without using an experimental API), and
+encryption / decryption of photos and videos would be a taxing process, I had to use every tool that
+I have to ensure performance.
 
 Very early on I offloaded all encryption and decryption to a web worker. Thus, the main thread was free
 of the most taxing part of the application. It also reduced the time it took to encrypt/decrypt a file.
@@ -74,14 +72,14 @@ await worker.decrypt(data, nonce, key);
 
 Then, we decided that we would cache any thumbnail that we load on UI in a [CacheStorage](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage).
 This way we don't have to re-download and decrypt the image. Improving our second load time. CacheStorage was ideal
-for this as it is accessible everywhere (main thread, webworker and service workers) and also has responds with
-a `Response` object. We implemented the entire thing just using following few lines
+for this as it is accessible everywhere (main thread, webworker and service workers) and also responds with
+a `Response` object. We implemented the entire thing just using following few lines.
 
 ```TypeScript
 // Open cache named `thumbs`
 const cache = await caches.open('thumbs');
 
-// Check if we already have thumbnail for the file id
+// Check if we already have thumbnail for the file in cache
 const cacheResp: Response = await cache.match(file.id.toString());
 
 if (cacheResp) {
@@ -136,7 +134,10 @@ that would work only in Chrome is not the experience we wanted to deliver.
     <img src="https://user-images.githubusercontent.com/2996493/110344031-19e4d480-8053-11eb-8d5e-5c5fc2621513.jpeg" alt="Low Confidence" />
 </p>
 
-And so we kept looking. By luck I stumbled on [this awesome podcast]([https://www.youtube.com/watch?v=G9PpImUEeUA](https://www.youtube.com/watch?v=G9PpImUEeUA)). 
+And so we kept looking. By luck I stumbled on this awesome podcast.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/G9PpImUEeUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 Streams was the answer! Instead of putting everything in memory and then encrypting/decrypting the file,
 we can do it with [Readable Streams](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream).
 However, axios (the library that we were using for making API calls) didn't have support for this. So,
@@ -191,9 +192,10 @@ I still had doubts whether this would work. However, once the video loaded witho
     <img src="https://user-images.githubusercontent.com/2996493/110343717-c70b1d00-8052-11eb-89c6-aaad65454b53.jpg" alt="ToDo" />
 </p>
 
-I am happy with the progress that we have made with the project. I knew about these technologies that I used
-from various conference talk / Youtube videos. But implementing them was a completely different ball game.
-Learned about WebWorkers, Comlink, CacheStorage, and ReadableStream. Worked with multiple libraries and filled in
+I am happy with the progress that we have made with the project. I was aware that these technologies existed and
+how they can be used. But implementing them was a completely different ball game. Multiple times I had to rewrite
+or look for better ways to implement the same thing, as bare metal implementation was tough to maintain.
+I learned about WebWorkers, Comlink, CacheStorage, and ReadableStream. Worked with multiple libraries and filled in
 where ever they fall short. All this without sacrificing on UX, usability and performance.
 
 Still, there are few things that I would like to solve. Right now the entire video needs to be downloaded before
@@ -202,7 +204,12 @@ it can be played. Ideally, I would like it to be able to stream. For this I expe
 specifying the codec for videos. Do let me know if you know about something that can help me out with it.
 I would love to hear from you. 😊
 
-I would also like to add service worker for offline caching and convert it to a PWA.
+Share is a feature which I feel is also very essential for this application.
+I would also like to add [Service worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers)
+with [Workbox](https://developers.google.com/web/tools/workbox) for offline caching and convert it to a PWA which
+can then be installed on mobile and desktop.
 
-You can check out the app at [photos.ente.io]([https://photos.ente.io/](https://photos.ente.io/)) or can also
-checkout the [code]([https://github.com/ente-io/bada-frame](https://github.com/ente-io/bada-frame)).
+You can check out the web app at [photos.ente.io](https://photos.ente.io/) or can also
+checkout the [code](https://github.com/ente-io/bada-frame).
+[Android](https://play.google.com/store/apps/details?id=io.ente.photos) and [iOS](https://apps.apple.com/in/app/ente-photos/id1542026904)
+apps are also available to play around. 😊

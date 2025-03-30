@@ -1,0 +1,48 @@
+---
+title: Sparkx
+description: Abstraction over Redux and UI Router for faster application development.
+github: pushkar8723/sparkx
+parent: /projects/
+priority: 4
+---
+
+Sparkx is my current big project. It started with me building a [React](https://reactjs.org/)
+[Redux](https://redux.js.org/) boilerplate. But soon evolved into a framework. Then I realized
+that it need not be React specific if I can decouple some hard dependencies. Meaning, it has 
+the potential to be a framework where a certain part of an application is in react whereas 
+some other part can be in [LitElement](https://lit-element.polymer-project.org/), or 
+[Preact](https://preactjs.com/).
+
+### Why?
+
+Lately I realized that the JavaScript community is somewhat split as per the view we use. Take
+for example this very website. It is made using Gatsby. Meaning I am using React too. Developers
+who are familiar with Vue or Angular will need to first learn React and then only they would be
+able to reap the benefits of Gatsby.
+
+### How?
+
+Well if you look at any application, it can be mostly split into three parts. Model, View, and Controllers.
+Since, I wanted Sparkx to be View agnostic, I only need to come up with a framework that manages the
+Model and Controllers. To manage the Model I used Redux and [UI Router](https://ui-router.github.io/)
+for routing. Users can create services in native JavaScript. For Controllers they can just extend a 
+base controller class and pass this along with their view while creating a route.
+
+### Features
+
+- [x] Application State management
+- [x] Immutable state
+- [x] Hierarchical state
+- [x] Routing with nested routes, transition hooks, and lazy load
+- [x] Support for hash and browser history API routing
+- [x] Typed
+- [x] Singleton services
+- [x] Support for React
+- [ ] Support for Preact
+- [ ] Support for Vue
+- [ ] Support for lit-element
+
+### When will this be completed?
+
+TBH IDK. The more I work on it, the more ideas I get and the goal post slips further away. But I will get
+there eventually. And I would also like a helping hand with this. So, ping me if you are interested.

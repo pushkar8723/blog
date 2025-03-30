@@ -23,7 +23,8 @@ const BlogPostTemplate = ({
       >
         <header>
           <h1 itemProp="headline">{post.frontmatter.title}</h1>
-          <p>{post.frontmatter.date}</p>
+          <div>{post.frontmatter.description || post.excerpt}</div>
+          <div>{post.frontmatter.date}</div>
         </header>
         <section
           itemProp="articleBody"

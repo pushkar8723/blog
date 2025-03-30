@@ -22,7 +22,41 @@ module.exports = {
   },
   plugins: [
     `gatsby-plugin-image`,
-    `gatsby-plugin-mdx`,
+    {
+      resolve: `gatsby-plugin-mdx`,
+      options: {
+        gatsbyRemarkPlugins: [
+          {
+            resolve: `gatsby-remark-images`,
+            options: {
+              maxWidth: 590,
+            },
+          },
+          {
+            resolve: `gatsby-remark-responsive-iframe`,
+            options: {
+              wrapperStyle: `margin-bottom: 1.0725rem`,
+            },
+          },
+          {
+            resolve: `gatsby-remark-autolink-headers`,
+            options: {
+                className: 'anchor-link'
+            }
+          },
+        ],
+        mdxOptions: {
+          remarkPlugins: [
+            [require('gatsby-remark-vscode').remarkPlugin, {
+              theme: {
+                default: 'Default Light+',
+                dark: 'Default Dark+'
+              }
+            }]
+          ]
+        }
+      },
+    },
     {
       resolve: `gatsby-source-filesystem`,
       options: {

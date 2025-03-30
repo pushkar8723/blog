@@ -8,6 +8,8 @@
 import * as React from "react"
 import { useStaticQuery, graphql } from "gatsby"
 import { StaticImage } from "gatsby-plugin-image"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faJsSquare } from '@fortawesome/free-brands-svg-icons';
 
 const Bio = () => {
   const data = useStaticQuery(graphql`
@@ -53,7 +55,14 @@ const Bio = () => {
         <p>
           Written by <strong>{author.name}</strong>
           <div>
-          {author?.summary || null}
+            Passionate{' '}
+            <FontAwesomeIcon
+              icon={faJsSquare}
+              style={{
+                height: '20px',
+              }}
+            />{' '}
+            Developer
           </div>
         </p>
       )}

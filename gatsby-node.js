@@ -50,6 +50,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           frontmatter {
             title
           }
+          internal {
+            contentFilePath
+          }
         }
       }
       subPage: allMdx(
@@ -64,6 +67,10 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
           }
           frontmatter {
             title
+            parent
+          }
+          internal {
+            contentFilePath
           }
         }
       }
@@ -86,7 +93,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   if (posts.length > 0) {
     posts.forEach((post, index) => {
-      console.log(post);
       const previousPostId = index === 0 ? null : posts[index - 1].id
       const nextPostId = index === posts.length - 1 ? null : posts[index + 1].id
 
@@ -101,6 +107,48 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       })
     })
   }
+
+  const pages = result.data.page.nodes
+
+  pages.forEach((page, index) => {
+    const previous = index === pages.length - 1 ? null : pages[index + 1]
+    const next = index === 0 ? null : pages[index - 1]
+
+    console.log(pages);
+
+    createPage({
+      path: `${page.fields.slug}`,
+      component: `${blogPost}?__contentFilePath=${page.internal.contentFilePath}`,
+      context: {
+        id: page.id,
+        previousPostId: previous?.id,
+        nextPostId: next?.id,
+      },
+    })
+  });
+
+  const subPages = result.data.subPage.nodes
+
+  subPages.forEach((page, index) => {
+    let previous = index === 0 ? null : subPages[index - 1]
+    if (previous?.frontmatter.parent !== page.frontmatter.parent) {
+      previous = null;
+    }
+    let next = index === subPages.length - 1 ? null : subPages[index + 1]
+    if (next?.frontmatter.parent !== page.frontmatter.parent) {
+        next = null;
+    }
+
+    createPage({
+      path: `${page.fields.slug}`,
+      component: `${blogPost}?__contentFilePath=${page.internal.contentFilePath}`,
+      context: {
+        id: page.id,
+        previousPostId: previous?.id,
+        nextPostId: next?.id,
+      },
+    })
+  });
 }
 
 /**
@@ -157,6 +205,7 @@ exports.createSchemaCustomization = ({ actions }) => {
       title: String
       description: String
       date: Date @dateformat
+      github: String
       parent: String
       priority: Int
     }

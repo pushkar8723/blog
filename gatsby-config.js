@@ -18,6 +18,8 @@ module.exports = {
     siteUrl: `https://abstracted.in/`,
     social: {
       twitter: `pushkar8723`,
+      github: `pushkar8723`,
+      linkedin: `in/pushkar8723`,
     },
   },
   plugins: [
@@ -25,6 +27,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-mdx`,
       options: {
+        extensions: [".mdx", ".md"],
         gatsbyRemarkPlugins: [
           {
             resolve: `gatsby-remark-images`,

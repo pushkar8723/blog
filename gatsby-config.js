@@ -23,7 +23,6 @@ module.exports = {
     },
   },
   plugins: [
-    `gatsby-plugin-image`,
     {
       resolve: `gatsby-plugin-feed`,
       options: {
@@ -157,8 +156,16 @@ module.exports = {
         ],
       },
     },
+    {
+      resolve: `gatsby-plugin-sharp`,
+      options: {
+          defaults: {
+              formats: [`auto`, `webp`],
+          },
+      },
+    },
     `gatsby-transformer-sharp`,
-    `gatsby-plugin-sharp`,
+    `gatsby-plugin-image`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {

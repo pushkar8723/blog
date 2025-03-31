@@ -8,9 +8,10 @@ import Bio from "../components/bio"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 import ExternalLink from "../components/ExternalLink"
+import PostLinks from "../components/PostLinks"
 
-const BlogPostTemplate = ({
-  data: { previous, next, site, mdx: post },
+const PageTemplate = ({
+  data: { previous, next, site, mdx: post, subPage },
   children,
   location,
 }) => {
@@ -38,6 +39,7 @@ const BlogPostTemplate = ({
             >
               {children}
             </MDXProvider>
+            {subPage?.nodes.length > 0 && <PostLinks posts={subPage.nodes} />}
         </section>
         <hr />
         <footer>
@@ -85,10 +87,10 @@ export const Head = ({ data: { mdx: post } }) => {
   )
 }
 
-export default BlogPostTemplate
+export default PageTemplate;
 
 export const pageQuery = graphql`
-  query BlogPostById($id: String!, $previousPostId: String, $nextPostId: String) {
+  query PageById($id: String!, $slug: String!, $previousPostId: String, $nextPostId: String) {
     site {
       siteMetadata {
         title
@@ -104,8 +106,29 @@ export const pageQuery = graphql`
         title
         date(formatString: "MMMM DD, YYYY")
         description
+        github
       }
       tableOfContents
+    }
+    subPage: allMdx(
+      filter: {frontmatter: {parent: {eq: $slug}}}
+      sort:{
+        frontmatter: {
+          priority: DESC
+        }
+      }
+    ) {
+      nodes {
+        id
+        frontmatter {
+          title
+          description
+          github
+        }
+        fields {
+          slug
+        }
+      }
     }
     previous: mdx(id: {eq: $previousPostId}) {
       fields {

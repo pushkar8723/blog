@@ -58,7 +58,21 @@
   --color-heading: #1a202c;
   --color-heading-black: black;
   --color-accent: #d1dce5;
+  --color-bg: #ffffff;
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #31313c;
+    --color-text: #FFF4EC;
+    --color-text-light: #cbd5e1;
+    --color-heading: #edf2f7;
+    --color-heading-black: #ffffff;
+    --color-primary: #64baff;
+    --color-accent: #4a5568;
+  }
+}
+
 
 /* HTML elements */
 
@@ -79,6 +93,7 @@ body {
   font-family: var(--font-body);
   font-size: var(--fontSize-1);
   color: var(--color-text);
+  background-color: var(--color-bg);
 }
 
 footer {

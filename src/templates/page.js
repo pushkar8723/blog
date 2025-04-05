@@ -64,7 +64,7 @@ const PageTemplate = ({
           <li>
             {previousPostId && (
               <Link to={previous.fields.slug} rel="prev">
-                <FontAwesomeIcon style={{ heigth: '16px', marginRight: '5px' }} icon={faChevronLeft} />
+                <FontAwesomeIcon style={{ height: '16px', marginRight: '5px' }} icon={faChevronLeft} />
                 {previous.frontmatter.title}
               </Link>
             )}
@@ -73,7 +73,7 @@ const PageTemplate = ({
             {nextPostId && (
               <Link to={next.fields.slug} rel="next">
                 {next.frontmatter.title}
-                <FontAwesomeIcon style={{ heigth: '16px', marginLeft: '5px' }} icon={faChevronRight} />
+                <FontAwesomeIcon style={{ height: '16px', marginLeft: '5px' }} icon={faChevronRight} />
               </Link>
             )}
           </li>

@@ -8,7 +8,7 @@ import Bio from "../components/bio"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 import ExternalLink from "../components/ExternalLink"
-import TableOfContent from "../components/TableOfContents";
+import TableOfContents from "../components/TableOfContents";
 
 const ArticleBody = styled.section.attrs({
   itemProp: "articleBody",
@@ -36,7 +36,7 @@ const BlogPostTemplate = ({
         itemScope
         itemType="http://schema.org/Article"
       >
-        <TableOfContent items={post.tableOfContents.items}/>
+        <TableOfContents items={post.tableOfContents.items}/>
         <header>
           <h1 itemProp="headline">{post.frontmatter.title}</h1>
           <div>{post.frontmatter.description || post.excerpt}</div>

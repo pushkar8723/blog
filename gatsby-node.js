@@ -115,8 +115,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     const next = index === pages.length - 1 ? null : pages[index + 1]
     const previous = index === 0 ? null : pages[index - 1]
 
-    console.log(page.frontmatter.title, previous?.frontmatter.title, next?.frontmatter.title);
-
     createPage({
       path: `${page.fields.slug}`,
       component: `${pageTemplate}?__contentFilePath=${page.internal.contentFilePath}`,

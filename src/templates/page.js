@@ -3,12 +3,18 @@ import { MDXProvider } from '@mdx-js/react';
 import { Link, graphql } from "gatsby"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-
+import styled from 'styled-components';
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 import ExternalLink from "../components/ExternalLink"
 import PostLinks from "../components/PostLinks"
+
+const ArticleBody = styled.section.attrs({
+  itemProp: "articleBody",
+})`
+  margin-top: 30px;
+`;
 
 const PageTemplate = ({
   data: { previous, next, site, mdx: post, subPage },
@@ -29,9 +35,7 @@ const PageTemplate = ({
           <div>{post.frontmatter.description || post.excerpt}</div>
           <div>{post.frontmatter.date}</div>
         </header>
-        <section
-          itemProp="articleBody"
-        >
+        <ArticleBody>
           <MDXProvider
               components={{
                   a: ExternalLink
@@ -40,7 +44,7 @@ const PageTemplate = ({
               {children}
             </MDXProvider>
             {subPage?.nodes.length > 0 && <PostLinks posts={subPage.nodes} />}
-        </section>
+        </ArticleBody>
         <hr />
         <footer>
           <Bio />

@@ -58,7 +58,10 @@ const Social = styled.div`
 
 const pageQuery = graphql`
   query Pages {
-    pages: allMdx(filter: {internal: { contentFilePath: {regex: "//page//"} }, frontmatter: {parent: {eq: null}}}) {
+    pages: allMdx(
+      filter: {internal: {contentFilePath: {regex: "//page//"}}, frontmatter: {parent: {eq: null}}}
+      sort: {frontmatter: {priority: ASC}}
+    ) {
       edges {
         node {
           frontmatter {
@@ -78,7 +81,6 @@ const pageQuery = graphql`
           twitter
           linkedin
         }
-        siteUrl
       }
     }
   }

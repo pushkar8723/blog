@@ -40,7 +40,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
       }
       page: allMdx(
         filter: {internal: {contentFilePath: {regex: "//page//"}}, frontmatter: {parent: {eq: null}}}
-        sort: {frontmatter: {priority: DESC}}
+        sort: {frontmatter: {priority: ASC}}
         limit: 1000
       ) {
         nodes {
@@ -109,11 +109,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     })
   }
 
-  const pages = result.data.page.nodes
+  const pages = result.data.page.nodes;
 
   pages.forEach((page, index) => {
-    const previous = index === pages.length - 1 ? null : pages[index + 1]
-    const next = index === 0 ? null : pages[index - 1]
+    const next = index === pages.length - 1 ? null : pages[index + 1]
+    const previous = index === 0 ? null : pages[index - 1]
+
+    console.log(page.frontmatter.title, previous?.frontmatter.title, next?.frontmatter.title);
 
     createPage({
       path: `${page.fields.slug}`,

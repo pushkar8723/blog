@@ -25,6 +25,7 @@ const BlogPostTemplate = ({
   data: { previous, next, site, mdx: post },
   children,
   location,
+  pageContext: { previousPostId, nextPostId },
 }) => {
   const siteTitle = site.siteMetadata?.title || `Title`
 
@@ -66,7 +67,7 @@ const BlogPostTemplate = ({
           }}
         >
           <li>
-            {previous && (
+            {previousPostId && (
               <Link to={previous.fields.slug} rel="prev">
                 <FontAwesomeIcon style={{ heigth: '16px', marginRight: '5px' }} icon={faChevronLeft} />
                 {previous.frontmatter.title}
@@ -74,7 +75,7 @@ const BlogPostTemplate = ({
             )}
           </li>
           <li>
-            {next && (
+            {nextPostId && (
               <Link to={next.fields.slug} rel="next">
                 {next.frontmatter.title}
                 <FontAwesomeIcon style={{ heigth: '16px', marginLeft: '5px' }} icon={faChevronRight} />

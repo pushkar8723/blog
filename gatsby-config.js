@@ -20,6 +20,8 @@ module.exports = {
       twitter: `pushkar8723`,
       github: `pushkar8723`,
       linkedin: `in/pushkar8723`,
+      instagram: `pushkar8723`,
+      facebook: `pushkar8723`,
     },
   },
   plugins: [

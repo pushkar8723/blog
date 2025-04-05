@@ -78,6 +78,7 @@ const pageQuery = graphql`
           twitter
           linkedin
         }
+        siteUrl
       }
     }
   }
@@ -120,11 +121,11 @@ const Layout = ({ location, title, children }) => {
                   <meta name="twitter:card" content="summary_large_image" />,
                   <meta
                     name="twitter:image"
-                    content={`${location.pathname}twitter-card.jpg`}
+                    content={`${data.site.siteMetadata.siteUrl}${location.pathname}twitter-card.jpg`}
                   />,
                   <meta
                     name="og:image"
-                    content={`${location.pathname}twitter-card.jpg`}
+                    content={`${data.site.siteMetadata.siteUrl}${location.pathname}twitter-card.jpg`}
                   />
                 ]  
               )}

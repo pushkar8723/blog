@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Helmet } from "react-helmet";
 import { Link, StaticQuery, graphql } from "gatsby";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTwitter, faGithub, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
@@ -110,6 +111,24 @@ const Layout = ({ location, title, children }) => {
         return (
           <>
             <GlobalStyle />
+            <Helmet>
+              {
+                isRootPath ?
+                <meta name="twitter:card" content="summary" />
+              : (
+                [
+                  <meta name="twitter:card" content="summary_large_image" />,
+                  <meta
+                    name="twitter:image"
+                    content={`${location.pathname}twitter-card.jpg`}
+                  />,
+                  <meta
+                    name="og:image"
+                    content={`${location.pathname}twitter-card.jpg`}
+                  />
+                ]  
+              )}
+            </Helmet>
             <div className="global-wrapper" data-is-root-path={isRootPath}>
               <header className="global-header">
                 <HomeLink>{header}</HomeLink>

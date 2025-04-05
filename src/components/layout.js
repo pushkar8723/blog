@@ -83,6 +83,7 @@ const pageQuery = graphql`
           facebook
           instagram
         }
+        siteUrl
       }
     }
   }

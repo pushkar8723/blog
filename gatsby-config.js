@@ -20,6 +20,8 @@ module.exports = {
       twitter: `pushkar8723`,
       github: `pushkar8723`,
       linkedin: `in/pushkar8723`,
+      instagram: `pushkar8723`,
+      facebook: `pushkar8723`,
     },
   },
   plugins: [
@@ -94,6 +96,14 @@ module.exports = {
             options: {
                 className: 'anchor-link'
             }
+          },
+          {
+            resolve: `gatsby-remark-twitter-cards`,
+            options: {
+              titleFontSize: 96,
+              background: require.resolve('./content/assets/base.png'),
+              fontColor: '#ffffff',
+            },
           },
         ],
         mdxOptions: {
@@ -176,6 +186,27 @@ module.exports = {
         theme_color: `#007acc`,
         display: `standalone`,
         icon: `content/assets/favicon.png`,
+      },
+    },
+    {
+      resolve: `gatsby-plugin-offline`,
+      options: {
+        workboxConfig: {
+          runtimeCaching: [
+            {
+              urlPattern: /(\.js$|\.css$|static\/)/,
+              handler: `CacheFirst`,
+            },
+            {
+              urlPattern: /^https?:.*\/page-data\/.*\.json$/,
+              handler: `NetworkFirst`,
+            },
+            {
+              urlPattern: /^https?:.*\.(json|png|jpg|jpeg|webp|svg|gif|tiff|bmp|ico|woff|woff2|eot|ttf|otf)$/,
+              handler: `StaleWhileRevalidate`,
+            },
+          ],
+        },
       },
     },
   ],

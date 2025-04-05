@@ -3,17 +3,24 @@ import { MDXProvider } from '@mdx-js/react';
 import { Link, graphql } from "gatsby"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-
+import styled from 'styled-components';
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 import ExternalLink from "../components/ExternalLink"
 import PostLinks from "../components/PostLinks"
 
+const ArticleBody = styled.section.attrs({
+  itemProp: "articleBody",
+})`
+  margin-top: 30px;
+`;
+
 const PageTemplate = ({
   data: { previous, next, site, mdx: post, subPage },
   children,
   location,
+  pageContext: { previousPostId, nextPostId },
 }) => {
   const siteTitle = site.siteMetadata?.title || `Title`
 
@@ -29,9 +36,7 @@ const PageTemplate = ({
           <div>{post.frontmatter.description || post.excerpt}</div>
           <div>{post.frontmatter.date}</div>
         </header>
-        <section
-          itemProp="articleBody"
-        >
+        <ArticleBody>
           <MDXProvider
               components={{
                   a: ExternalLink
@@ -40,7 +45,7 @@ const PageTemplate = ({
               {children}
             </MDXProvider>
             {subPage?.nodes.length > 0 && <PostLinks posts={subPage.nodes} />}
-        </section>
+        </ArticleBody>
         <hr />
         <footer>
           <Bio />
@@ -57,18 +62,18 @@ const PageTemplate = ({
           }}
         >
           <li>
-            {previous && (
+            {previousPostId && (
               <Link to={previous.fields.slug} rel="prev">
-                <FontAwesomeIcon style={{ heigth: '16px', marginRight: '5px' }} icon={faChevronLeft} />
+                <FontAwesomeIcon style={{ height: '16px', marginRight: '5px' }} icon={faChevronLeft} />
                 {previous.frontmatter.title}
               </Link>
             )}
           </li>
           <li>
-            {next && (
+            {nextPostId && (
               <Link to={next.fields.slug} rel="next">
                 {next.frontmatter.title}
-                <FontAwesomeIcon style={{ heigth: '16px', marginLeft: '5px' }} icon={faChevronRight} />
+                <FontAwesomeIcon style={{ height: '16px', marginLeft: '5px' }} icon={faChevronRight} />
               </Link>
             )}
           </li>

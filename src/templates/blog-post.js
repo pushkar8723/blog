@@ -3,16 +3,29 @@ import { MDXProvider } from '@mdx-js/react';
 import { Link, graphql } from "gatsby"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-
+import styled from 'styled-components';
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 import ExternalLink from "../components/ExternalLink"
+import TableOfContents from "../components/TableOfContents";
+
+const ArticleBody = styled.section.attrs({
+  itemProp: "articleBody",
+})`
+  margin-top: 30px;
+`;
+
+const DateContainer = styled.div`
+  font-size: 12px;
+  color: var(--color-text-light);
+`;
 
 const BlogPostTemplate = ({
   data: { previous, next, site, mdx: post },
   children,
   location,
+  pageContext: { previousPostId, nextPostId },
 }) => {
   const siteTitle = site.siteMetadata?.title || `Title`
 
@@ -23,14 +36,13 @@ const BlogPostTemplate = ({
         itemScope
         itemType="http://schema.org/Article"
       >
+        <TableOfContents items={post.tableOfContents.items}/>
         <header>
           <h1 itemProp="headline">{post.frontmatter.title}</h1>
           <div>{post.frontmatter.description || post.excerpt}</div>
-          <div>{post.frontmatter.date}</div>
+          <DateContainer>{post.frontmatter.date}</DateContainer>
         </header>
-        <section
-          itemProp="articleBody"
-        >
+        <ArticleBody>
           <MDXProvider
               components={{
                   a: ExternalLink
@@ -38,7 +50,7 @@ const BlogPostTemplate = ({
             >
               {children}
             </MDXProvider>
-        </section>
+        </ArticleBody>
         <hr />
         <footer>
           <Bio />
@@ -55,18 +67,18 @@ const BlogPostTemplate = ({
           }}
         >
           <li>
-            {previous && (
+            {previousPostId && (
               <Link to={previous.fields.slug} rel="prev">
-                <FontAwesomeIcon style={{ heigth: '16px', marginRight: '5px' }} icon={faChevronLeft} />
+                <FontAwesomeIcon style={{ height: '16px', marginRight: '5px' }} icon={faChevronLeft} />
                 {previous.frontmatter.title}
               </Link>
             )}
           </li>
           <li>
-            {next && (
+            {nextPostId && (
               <Link to={next.fields.slug} rel="next">
                 {next.frontmatter.title}
-                <FontAwesomeIcon style={{ heigth: '16px', marginLeft: '5px' }} icon={faChevronRight} />
+                <FontAwesomeIcon style={{ height: '16px', marginLeft: '5px' }} icon={faChevronRight} />
               </Link>
             )}
           </li>

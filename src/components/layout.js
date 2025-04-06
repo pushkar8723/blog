@@ -125,7 +125,7 @@ const Layout = ({ location, title, children }) => {
                 [
                   <meta name="twitter:card" content="summary_large_image" />,
                   <meta
-                    name="twitter:image"
+                    name="twitter:image:src"
                     content={`${data.site.siteMetadata.siteUrl}${location.pathname}twitter-card.jpg`}
                   />,
                   <meta

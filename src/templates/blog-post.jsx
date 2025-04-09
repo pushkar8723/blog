@@ -1,3 +1,4 @@
+import React from 'react';
 import * as React from "react"
 import { MDXProvider } from '@mdx-js/react';
 import { Link, graphql } from "gatsby"
@@ -8,7 +9,7 @@ import Bio from "../components/bio"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 import ExternalLink from "../components/ExternalLink"
-import PostLinks from "../components/PostLinks"
+import TableOfContents from "../components/TableOfContents";
 
 const ArticleBody = styled.section.attrs({
   itemProp: "articleBody",
@@ -16,8 +17,13 @@ const ArticleBody = styled.section.attrs({
   margin-top: 30px;
 `;
 
-const PageTemplate = ({
-  data: { previous, next, site, mdx: post, subPage },
+const DateContainer = styled.div`
+  font-size: 12px;
+  color: var(--color-text-light);
+`;
+
+const BlogPostTemplate = ({
+  data: { previous, next, site, mdx: post },
   children,
   location,
   pageContext: { previousPostId, nextPostId },
@@ -31,10 +37,11 @@ const PageTemplate = ({
         itemScope
         itemType="http://schema.org/Article"
       >
+        <TableOfContents items={post.tableOfContents.items}/>
         <header>
           <h1 itemProp="headline">{post.frontmatter.title}</h1>
           <div>{post.frontmatter.description || post.excerpt}</div>
-          <div>{post.frontmatter.date}</div>
+          <DateContainer>{post.frontmatter.date}</DateContainer>
         </header>
         <ArticleBody>
           <MDXProvider
@@ -44,7 +51,6 @@ const PageTemplate = ({
             >
               {children}
             </MDXProvider>
-            {subPage?.nodes.length > 0 && <PostLinks posts={subPage.nodes} />}
         </ArticleBody>
         <hr />
         <footer>
@@ -92,10 +98,10 @@ export const Head = ({ data: { mdx: post } }) => {
   )
 }
 
-export default PageTemplate;
+export default BlogPostTemplate
 
 export const pageQuery = graphql`
-  query PageById($id: String!, $slug: String!, $previousPostId: String, $nextPostId: String) {
+  query BlogPostById($id: String!, $previousPostId: String, $nextPostId: String) {
     site {
       siteMetadata {
         title
@@ -111,29 +117,8 @@ export const pageQuery = graphql`
         title
         date(formatString: "MMMM DD, YYYY")
         description
-        github
       }
       tableOfContents
-    }
-    subPage: allMdx(
-      filter: {frontmatter: {parent: {eq: $slug}}}
-      sort:{
-        frontmatter: {
-          priority: DESC
-        }
-      }
-    ) {
-      nodes {
-        id
-        frontmatter {
-          title
-          description
-          github
-        }
-        fields {
-          slug
-        }
-      }
     }
     previous: mdx(id: {eq: $previousPostId}) {
       fields {

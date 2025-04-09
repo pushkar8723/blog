@@ -5,10 +5,14 @@ export default function ExternalLink(props) {
     if (props.href.startsWith('/')) {
         return <a {...props} />;
     }
-    return <a {...props} target="_blank" rel="noopener noreferrer"/>;
+    return <a {...props} target="_blank" rel="noopener noreferrer" />;
 }
 
 ExternalLink.propTypes = {
     href: PropTypes.string.isRequired,
-    children: PropTypes.node.isRequired,
-}
+    children: PropTypes.node,
+};
+
+ExternalLink.defaultProps = {
+    children: null,
+};

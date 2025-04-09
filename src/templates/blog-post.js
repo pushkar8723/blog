@@ -1,14 +1,13 @@
 import React from 'react';
-import * as React from "react"
 import { MDXProvider } from '@mdx-js/react';
 import { Link, graphql } from "gatsby"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
-import Bio from "../components/bio"
-import Layout from "../components/layout"
-import Seo from "../components/seo"
-import ExternalLink from "../components/ExternalLink"
+import Bio from "../components/bio";
+import Layout from "../components/layout";
+import Seo from "../components/seo";
+import ExternalLink from "../components/ExternalLink";
 import TableOfContents from "../components/TableOfContents";
 
 const ArticleBody = styled.section.attrs({

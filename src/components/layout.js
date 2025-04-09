@@ -13,6 +13,7 @@ import {
 import { faCopyright, faRss } from '@fortawesome/free-solid-svg-icons';
 import styled, { createGlobalStyle } from 'styled-components';
 
+// eslint-disable-next-line no-underscore-dangle
 const __PATH_PREFIX__ = '';
 
 const GlobalStyle = createGlobalStyle`

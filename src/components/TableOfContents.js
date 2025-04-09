@@ -57,14 +57,15 @@ const Container = styled.div`
 `;
 
 export default function TableOfContent(props) {
+    const { items } = props;
     const [active, setActive] = useState();
 
-    if (props.items) {
+    if (items) {
         return (
             <Container>
                 <h4>Table of Contents</h4>
                 <Scrollspy
-                    items={props.items.map(item => item.url.substr(1))}
+                    items={items.map(item => item.url.substr(1))}
                     onUpdate={el => {
                         if (el) {
                             setActive(
@@ -73,7 +74,7 @@ export default function TableOfContent(props) {
                         }
                     }}
                 >
-                    {props.items.map(item => (
+                    {items.map(item => (
                         <li className={item.url === active && 'active'}>
                             <a href={item.url}>{item.title}</a>
                         </li>

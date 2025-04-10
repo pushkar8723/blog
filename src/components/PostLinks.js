@@ -46,8 +46,13 @@ export default function PostLinks(props) {
 PostLinks.propTypes = {
     posts: PropTypes.arrayOf(
         PropTypes.shape({
-            title: PropTypes.string.isRequired,
-            slug: PropTypes.string.isRequired,
+            frontmatter: PropTypes.shape({
+                title: PropTypes.string.isRequired,
+                slug: PropTypes.string.isRequired,
+                description: PropTypes.string,
+                date: PropTypes.string.isRequired,
+                github: PropTypes.string,
+            }),
         })
     ).isRequired,
 };

@@ -75,7 +75,7 @@ export default function TableOfContents(props) {
                     }}
                 >
                     {items.map(item => (
-                        <li className={item.url === active && 'active'}>
+                        <li className={item.url === active ? 'active' : ''}>
                             <a href={item.url}>{item.title}</a>
                         </li>
                     ))}

@@ -1,3 +1,5 @@
+//
+
 /**
  * Configure your Gatsby site with this file.
  *
@@ -115,6 +117,7 @@ module.exports = {
                 mdxOptions: {
                     remarkPlugins: [
                         [
+                            // eslint-disable-next-line global-require
                             require('gatsby-remark-vscode').remarkPlugin,
                             {
                                 theme: {

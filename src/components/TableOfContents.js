@@ -56,7 +56,7 @@ const Container = styled.div`
     }
 `;
 
-export default function TableOfContent(props) {
+export default function TableOfContents(props) {
     const { items } = props;
     const [active, setActive] = useState();
 
@@ -87,7 +87,7 @@ export default function TableOfContent(props) {
     return null;
 }
 
-TableOfContent.propTypes = {
+TableOfContents.propTypes = {
     items: PropTypes.arrayOf(
         PropTypes.shape({
             title: PropTypes.string.isRequired,

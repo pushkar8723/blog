@@ -10,6 +10,7 @@ import './src/style.css';
 import 'prismjs/themes/prism.css';
 
 export const onServiceWorkerUpdateReady = () => {
+    // eslint-disable-next-line no-alert
     const answer = window.confirm(
         'This site has been updated. Reload to display the latest version?'
     );

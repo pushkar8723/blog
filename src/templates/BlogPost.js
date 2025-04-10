@@ -7,9 +7,9 @@ import {
     faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
-import Bio from '../components/bio';
-import Layout from '../components/layout';
-import Seo from '../components/seo';
+import Bio from '../components/Bio';
+import Layout from '../components/Layout';
+import Seo from '../components/Seo';
 import ExternalLink from '../components/ExternalLink';
 import TableOfContents from '../components/TableOfContents';
 

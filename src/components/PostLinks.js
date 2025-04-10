@@ -48,11 +48,13 @@ PostLinks.propTypes = {
         PropTypes.shape({
             frontmatter: PropTypes.shape({
                 title: PropTypes.string.isRequired,
-                slug: PropTypes.string.isRequired,
                 description: PropTypes.string,
                 date: PropTypes.string.isRequired,
                 github: PropTypes.string,
             }),
+            fields: PropTypes.shape({
+                slug: PropTypes.string.isRequired,
+            }).isRequired,
         })
     ).isRequired,
 };

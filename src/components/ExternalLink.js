@@ -1,14 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'gatsby';
 
 export default function ExternalLink(props) {
-    if (props.href.startsWith('/')) {
-        return <a {...props} />;
+    const { href, children, ...rest } = props;
+    if (href.startsWith('/')) {
+        return (
+            <Link to={href} {...rest}>
+                {children}
+            </Link>
+        );
     }
-    return <a {...props} target="_blank" rel="noopener noreferrer"/>;
+    return (
+        <a href={href} {...rest} target="_blank" rel="noopener noreferrer">
+            {children}
+        </a>
+    );
 }
 
 ExternalLink.propTypes = {
     href: PropTypes.string.isRequired,
-    children: PropTypes.node.isRequired,
-}
+    children: PropTypes.node,
+};
+
+ExternalLink.defaultProps = {
+    children: null,
+};

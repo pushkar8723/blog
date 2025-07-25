@@ -6,7 +6,7 @@ keywords: "Promise, Polyfill, Chaining"
 featured: true
 ---
 
-Lets be honest, nobody needs to write a polyfill for promise these days. Most of us only look for it when we
+Let's be honest, nobody needs to write a polyfill for promise these days. Most of us only look for it when we
 start preparing for interviews. Promise polyfill is among the most common questions asked in JavaScript interviews.
 As a consequence, there are endless blogs on this.
 
@@ -20,7 +20,7 @@ So, in this post, I want to take you through my journey on what I feel is the co
 
 ## Defining Promise
 
-Lets start by defining a basic Promise class.
+Let's start by defining a basic Promise class.
 
 ```TypeScript
 type ExecutorFn<T> = (
@@ -34,7 +34,7 @@ class MyPromise<T> {
   /**
    * Called when Promise is resolved.
    */
-  private resolve = (data: T) => {}
+  private resolve = (data?: T) => {}
 
   /**
    * Called when Promise is rejected
@@ -47,7 +47,7 @@ This seems simple enough to start. We have a constructor for our Promise which t
 parameter. This executor function will be passed resolve and reject callbacks to fulfill or reject the promise respectively.
 We have two private methods for resolve and reject as well.
 
-Before we start Implementing these methods, we must define how the Promise works. Lets list down the key behaviors:
+Before we start Implementing these methods, we must define how the Promise works. Let's list down the key behaviors:
 1. **Executor function should be run synchronously when the Promise is created.**<br/>
 One of the most common mistake I see calling the executor function inside `setTimeout`. When in reality the executor
 function is ran as soon as Promise is created. This can be verified by running following snippet in browser console.
@@ -70,7 +70,7 @@ Promise Resolved
 2. **`resolve` and `reject` should be pushed to micro task queue.**<br/>
 Another common mistake is using `setTimeout`. Promises are pushed to micro task queue where as
 `setTimeout` goes to macro task queue (or just task queue). I have seen few people describing this
-behaviors as Promise having a higher priority. If this is something new to you and you want to understand
+behavior as Promise having a higher priority. If this is something new to you and you want to understand
 this better, [I suggest you watch this awesome talk](https://www.youtube.com/watch?v=cCOL7MC4Pl0).
 3. **`then`, `catch` and `finally` should return a new Promise.**
 4. **Multiple `then`, `catch` and `finally` can be added to same promise.**<br/>
@@ -96,7 +96,7 @@ Get 3: Data
 ```
 6. **If callbacks from `then`, `catch` and `finally` returns a promise then the returned Promise should be chained.**<br/>
 This means that we can even return a Promise from callbacks passed to `then`, `catch` and `finally` and still receive
-the resolved value fo the returned Promise. Following snippet will demonstrate this.
+the resolved value of the returned Promise. Following snippet will demonstrate this.
 ```JavaScript
 const p = Promise.reject('Bad Request');
 p.then(() => console.log('What?'))
@@ -132,7 +132,7 @@ class MyPromise<T> {
   /**
    * Called when Promise is resolved.
    */
-  private resolve = (data: T) => {}
+  private resolve = (data?: T) => {}
 
   /**
    * Called when Promise is rejected
@@ -143,7 +143,7 @@ class MyPromise<T> {
 
 ## Resolve and Reject
 
-Next lets implement the resolve and reject function. For this we need do define few variables in our class.
+Next Let's implement the resolve and reject function. For this we need do define few variables in our class.
 Since a Promise can be only one of the three state (`Pending`, `Fulfilled`, or `Rejected`) we need a `status` variable.
 And since we know that Promise value can be used long after it has settled, we should also store the value.
 For this I am creating 2 variables, `successData` and `failureError`.
@@ -151,7 +151,7 @@ For this I am creating 2 variables, `successData` and `failureError`.
 ```TypeScript {2-7}
 class MyPromise<T> {
   /** Status of the Promise */
-  private status = 'pending';
+  private status: 'pending' | 'fulfilled' | 'rejected' = 'pending';
   /** Stores value of the promise if it is resolved */
   private successData?: T;
   /** Stores error returned by the promise if it is rejected */
@@ -170,7 +170,7 @@ class MyPromise<T> {
   /**
    * Called when Promise is resolved.
    */
-  private resolve = (data: T) => {}
+  private resolve = (data?: T) => {}
 
   /**
    * Called when Promise is rejected
@@ -179,7 +179,7 @@ class MyPromise<T> {
 }
 ```
 
-Now lets focus on resolve. As we know, we need to push the execution of resolve
+Now Let's focus on resolve. As we know, we need to push the execution of resolve
 in a micro task queue, we will have to use `queueMicrotask` function. Inside this, we will
 have to update the status to `fulfilled` and also save the value passed to resolve function.
 It is also a good idea to check that Promise is in `pending` state, so that we don't override
@@ -188,7 +188,7 @@ the value if resolve is called twice. Thus we can write our resolve function as 
 ```TypeScript{23-30}
 class MyPromise<T> {
   /** Status of the Promise */
-  private status = 'pending';
+  private status: 'pending' | 'fulfilled' | 'rejected' = 'pending';
   /** Stores value of the promise if it is resolved */
   private successData?: T;
   /** Stores error returned by the promise if it is rejected */
@@ -207,7 +207,7 @@ class MyPromise<T> {
   /**
    * Called when Promise is resolved.
    */
-  private resolve = (data: T) => {
+  private resolve = (data?: T) => {
     queueMicrotask(() => {
       // Promise can be resolved only once
       if (this.status === 'pending') {
@@ -230,7 +230,7 @@ Similarly implementing reject as:
 ```TypeScript{37-44}
 class MyPromise<T> {
   /** Status of the Promise */
-  private status = 'pending';
+  private status: 'pending' | 'fulfilled' | 'rejected' = 'pending';
   /** Stores value of the promise if it is resolved */
   private successData?: T;
   /** Stores error returned by the promise if it is rejected */
@@ -249,7 +249,7 @@ class MyPromise<T> {
   /**
    * Called when Promise is resolved.
    */
-  private resolve = (data: T) => {
+  private resolve = (data?: T) => {
     queueMicrotask(() => {
       // Promise can be resolved only once
       if (this.status === 'pending') {

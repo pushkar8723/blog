@@ -6,7 +6,7 @@ import GithubBtns from '../components/githbubBtns';
 const PostLink = ({ node }) => {
     const title = node.frontmatter.title || node.fields.slug
     return (
-        <div key={node.fields.slug}>
+        <article key={node.fields.slug}>
             <h3
                 style={{
                     marginBottom: rhythm(1 / 4),
@@ -26,7 +26,7 @@ const PostLink = ({ node }) => {
             />
             {node.frontmatter.date && <small>{node.frontmatter.date}</small>}
             {node.frontmatter.github && <GithubBtns repo={node.frontmatter.github} />}
-        </div>
+        </article>
     )
 }
 

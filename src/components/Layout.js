@@ -24,6 +24,22 @@ const GlobalStyle = createGlobalStyle`
   iframe {
     max-width: 100%;
   }
+
+  p, li, h1, h2, h3, h4, h5, h6 {
+    & code {
+      background-color: var(--color-accent);
+      border-radius: var(--spacing-1);
+      padding: var(--spacing-0) var(--spacing-1);
+    }
+  }
+  
+  code {
+    width: 100%;
+  }
+
+  pre {
+    border: 1px solid var(--color-accent);
+  }
 `;
 
 const HomeLink = styled.div`

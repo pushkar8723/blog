@@ -24,8 +24,8 @@ Let's start by defining a basic Promise class.
 
 ```TypeScript
 type ExecutorFn<T> = (
-  resolve: (data?: T) => any,
-  reject: (reason?: any) => any,
+  resolve: (data?: T) => unknown,
+  reject: (reason?: unknown) => unknown,
 ) => void;
 
 class MyPromise<T> {
@@ -39,7 +39,7 @@ class MyPromise<T> {
   /**
    * Called when Promise is rejected
    */
-  private reject = (error?: any) => {}
+  private reject = (error?: unknown) => {}
 }
 ```
 
@@ -120,7 +120,7 @@ Now we can implement our constructor
 ```TypeScript{3-9}
 class MyPromise<T> {
   constructor(executor: ExecutorFn) {
-    // Call the executor synchronously [1]
+    // Call the executor synchronously
     try {
       executor(this.resolve, this.reject);
     } catch (e) {
@@ -137,7 +137,7 @@ class MyPromise<T> {
   /**
    * Called when Promise is rejected
    */
-  private reject = (error?: any) => {}
+  private reject = (error?: unknown) => {}
 }
 ```
 
@@ -155,10 +155,10 @@ class MyPromise<T> {
   /** Stores value of the promise if it is resolved */
   private successData?: T;
   /** Stores error returned by the promise if it is rejected */
-  private failureError?: any;
+  private failureError?: unknown;
 
   constructor(executor: ExecutorFn) {
-    // Call the executor synchronously [1]
+    // Call the executor synchronously
     try {
       executor(this.resolve, this.reject);
     } catch (e) {
@@ -175,7 +175,7 @@ class MyPromise<T> {
   /**
    * Called when Promise is rejected
    */
-  private reject = (error?: any) => {}
+  private reject = (error?: unknown) => {}
 }
 ```
 
@@ -192,10 +192,10 @@ class MyPromise<T> {
   /** Stores value of the promise if it is resolved */
   private successData?: T;
   /** Stores error returned by the promise if it is rejected */
-  private failureError?: any;
+  private failureError?: unknown;
 
   constructor(executor: ExecutorFn) {
-    // Call the executor synchronously [1]
+    // Call the executor synchronously
     try {
       executor(this.resolve, this.reject);
     } catch (e) {
@@ -221,7 +221,7 @@ class MyPromise<T> {
   /**
    * Called when Promise is rejected
    */
-  private reject = (error?: any) => {}
+  private reject = (error?: unknown) => {}
 }
 ```
 
@@ -234,10 +234,10 @@ class MyPromise<T> {
   /** Stores value of the promise if it is resolved */
   private successData?: T;
   /** Stores error returned by the promise if it is rejected */
-  private failureError?: any;
+  private failureError?: unknown;
 
   constructor(executor: ExecutorFn) {
-    // Call the executor synchronously [1]
+    // Call the executor synchronously
     try {
       executor(this.resolve, this.reject);
     } catch (e) {
@@ -263,7 +263,7 @@ class MyPromise<T> {
   /**
    * Called when Promise is rejected
    */
-  private reject = (error?: any) => {
+  private reject = (error?: unknown) => {
     queueMicrotask(() => {
       // Promise can be rejected only once
       if (this.status === 'pending') {
@@ -279,19 +279,412 @@ class MyPromise<T> {
 
 ## Implementing `then`
 
-The main challenge in implementing Promise Polyfill lies in `then`. Rest can be easily implemented using this then function.
+The main challenge in implementing Promise Polyfill lies in `then`. Rest can be easily implemented using this `then` function.
+Since adding the entire class for each small addition would make this post unnecessarily long, I will only add the relevant changes
+in each snippet. If you want to follow along, I suggest copy the above snippet in a code editor and keep adding the highlighted 
+delta in your file.
 
+While implementing `then`, we should take care of following things:
+1. `then` function takes both success and failure callbacks.
+2. It should return a new Promise.
+3. `then` can be called on already settled Promise.
+4. A promise can have multiple `then` calls.
 
-### Basic implementation
+For point #4, I am adding two arrays in my class `successCallbacks` and `catchCallbacks`. I will simply push callbacks
+passed to `then` function in these array and call them when the promise is settled from the `resolve`/`reject` method.
 
-### Complete implementation
+```TypeScript{2-5,19-23,40-44}
+class MyPromise<T> {
+  /** All success callbacks for the promise */
+  private thenCallbacks: ((value?: T) => unknown)[] = [];
+  /** All failure callbacks for the promise */
+  private catchCallbacks:  ((reason?: unknown) => unknown)[] = [];
+
+  /**
+   * Called when Promise is resolved.
+   */
+  private resolve = (data?: T) => {
+    // Push to microtask queue
+    queueMicrotask(() => {
+      // Promise can be resolved only once
+      if (this.status === 'pending') {
+        // Update status and store data
+        this.status = 'fulfilled';
+        this.successData = data;
+    
+        // Call all success callbacks
+        this.thenCallbacks.forEach(cb => cb(data));
+        // Clear callbacks to avoid memory leaks
+        this.thenCallbacks = [];
+        this.catchCallbacks = [];
+      }
+    });
+  };
+
+  /**
+   * Called when Promise is rejected
+   */
+  private reject = (error?: unknown) => {
+    // Push to microtask queue
+    queueMicrotask(() => {
+      // Promise can be rejected only once
+      if (this.status === 'pending') {
+        // Update status and store error
+        this.status = 'rejected';
+        this.failureError = error;
+  
+        // Call all failure callbacks
+        this.catchCallbacks.forEach(cb => cb(error));
+        // Clear callbacks to avoid memory leaks
+        this.thenCallbacks = [];
+        this.catchCallbacks = [];
+      }
+    });
+  };
+}
+```
+
+Here first 2 points are easy to implement as shown below:
+
+```TypeScript
+class MyPromise<T> {
+  /**
+   * Promise then chain
+   */
+  public then = (
+    onFulfilled?: (data: T) => unknown,
+    onRejected?: (reason: unknown) => unknown
+  ) => {
+    // Success Callback, default fn would simply return the data
+    const successCallback = onFulfilled ? onFulfilled : (data: unknown) => data;
+
+    // Failure Callback, default fn would simply throw the error
+    const failureCallback = onRejected ? onRejected : (err: unknown) => { throw err };
+
+    // Return a new Promise
+    return new MyPromise((resolve, reject) => {});
+  };
+}
+```
+
+I just took two callbacks, both of these are optional, so defined a default function for them.
+For success default function, we just return the value passed and for failure default function we just re-throw the error
+(This is as per what is described in [MDN Doc `then` parameters](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then#parameters)).
+And return a new Promise.
+
+For point #3, we need to check the status of the Promise and act accordingly. Since, the things we need to do in each
+scenario is quite similar, I have extracted out the main logic in a common handler function.
+
+```TypeScript{17-50}
+class MyPromise<T> {
+  /**
+   * Promise then chain
+   */
+  public then = (
+    onFulfilled?: (data: T) => unknown,
+    onRejected?: (reason: unknown) => unknown
+  ) => {
+    // Success Callback, default fn would simply return the data
+    const successCallback = onFulfilled ? onFulfilled : (data: unknown) => data;
+
+    // Failure Callback, default fn would simply throw the error
+    const failureCallback = onRejected ? onRejected : (err: unknown) => { throw err };
+
+    // Return a new Promise
+    return new MyPromise((resolve, reject) => {
+      /**
+       * Common handler for both success and failure
+       */
+      const handle = (callback: Function, arg: unknown) => {
+        try {
+          // Resolve the returned promise with callback value
+          resolve(callback(arg));
+        } catch(e) {
+          // Reject the returned promise in case of error
+          reject(e);
+        }
+      }
+
+      if (this.status === 'pending') {
+        // Push to success callbacks
+        this.thenCallbacks.push((data) => {
+          handle(successCallback, data);
+        });
+
+        // Push to failure callbacks
+        this.catchCallbacks.push((error) => {
+          handle(failureCallback, error);
+        });
+      } else if (this.status === 'fulfilled') {
+        // Promise is already resolved, pass the data to callback
+        queueMicrotask(() => {
+          handle(successCallback, this.successData);
+        });
+      } else {
+        // Promise is already rejected, pass the error to callback
+        queueMicrotask(() => {
+          handle(failureCallback, this.failureError);
+        });
+      }
+    });
+  };
+}
+```
+
+The `handle` function quite simple. We try to call the `callback` function with the `arg`. If it succeeds then we
+resolve the Promise with the callback's returned value. If we encounter any issue then we reject the Promise with
+the encountered error.
+
+Creating the `handle` function simplified the remaining logic a lot. For pending case we just push the callback
+functions in their respective array and when the promise settles, the appropriate callback should be called by our
+resolve/reject functions.
+
+In case the promise is already settled, then we need to pass the respective callback and data to our `handle` function.
+We wrap this inside a `queueMicrotask` as we don't want to execute the callbacks synchronously. Because as per `then`
+specifications, the callbacks are executed asynchronously.
+
+And this completes our `then` implementation. 🎉
+
+If you have followed along till now, you should give yourself a pat on the back! It may not seem like much but trust
+me there are many pitfalls and confusing scenarios that we have overcome. Rest of the journey would be fairly simple.
+
+Though there is one important thing that we haven't implemented till now.
+
+## Chaining Promise
+
+What if, from my callback I return a promise? Our current implementation would return this Promise as value to Our
+success callback and that would require us to put another `then` on the value received by our `then`. Something like:
+
+```JavaScript
+new MyPromise((resolve) => {
+    resolve(Promise.resolve('Hello World!'))
+}).then(value => {
+    value.then(finalValue => console.log(finalValue));
+});
+```
+
+But we know, this isn't how we are supposed to use Promise. Instead we should get the final value in the outer `then`
+function itself. Well this may seem complicated, but quite easy to solve. In our `resolve` function, we just need to
+check if the value is [thenable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#thenables).
+If so, we will just chain our `resolve` and `reject` function to this `then` function.
+
+Something like:
+
+```TypeScript{6-9,25-25}
+class MyPromise<T> {
+  /**
+   * Called when Promise is resolved.
+   */
+  private resolve = (data?: T) => {
+    // Check if value is another promise
+    if (data && typeof (data as any).then === 'function') {
+      (data as any).then(this.resolve, this.reject);
+    } else {
+      // Push to microtask queue
+      queueMicrotask(() => {
+        // Promise can be resolved only once
+        if (this.status === 'pending') {
+          // Update status and store data
+          this.status = 'fulfilled';
+          this.successData = data;
+        
+          // Call all success callbacks
+          this.thenCallbacks.forEach(cb => cb(data));
+          // Clear callbacks to avoid memory leaks
+          this.thenCallbacks = [];
+          this.catchCallbacks = [];
+        }
+      });
+    }
+  };
+}
+```
+
+## Unhandled Rejection
+
+Another commonly ignored part about Promise is unhandled rejections. When a Promise's rejection is not handled,
+a [`unhandledrejection` Event](https://developer.mozilla.org/en-US/docs/Web/API/Window/unhandledrejection_event)
+is emitted on window. It will also contain reference to Promise and error. 
+
+We can emit this event in our `reject` method when `catchCallbacks` is empty. However, I got lazy and didn't want
+to resolve `globalThis` for different environments JavaScript can run. So instead added a `console.error` instead. 😬
+
+```TypeScript{14-17}
+class MyPromise<T> {
+  /**
+   * Called when Promise is rejected
+   */
+  private reject = (error?: unknown) => {
+    // Push to microtask queue
+    queueMicrotask(() => {
+      // Promise can be rejected only once
+      if (this.status === 'pending') {
+        // Update status and store error
+        this.status = 'rejected';
+        this.failureError = error;
+  
+        // Check for unhandled rejections
+        if (this.catchCallbacks.length == 0) {
+          console.error("Unhandled Reject");
+        }
+  
+        // Call all failure callbacks
+        this.catchCallbacks.forEach(cb => cb(error));
+        // Clear callbacks to avoid memory leaks
+        this.thenCallbacks = [];
+        this.catchCallbacks = [];
+      }
+    });
+  };
+}
+```
 
 ## Implementing `catch` and `finally`
 
+Now we have `then` implement in place along with chaining and unhandled rejection in place. We can easily implement
+`catch` and `finally` function to complete our Polyfill. For these we can simply reuse our `then` function, as shown
+in the snippet below.
+
+```TypeScript
+class MyPromise<T> {
+  /**
+   * Promise catch chain
+   * Implement using then chain
+   */
+  public catch = (onRejected: (reason?: unknown) => unknown) => {
+    return this.then(undefined, onRejected);
+  }
+
+  /**
+   * Promise finally chain
+   * Implement using then chain
+   */
+  public finally = (onFinally?: () => unknown) => {
+    // Using a promise to wrap `onFinally` in both success and failure.
+    // This way, if `onFinally` returns another promise, that is also
+    // automatically chained.
+    return this.then((data: unknown) => {
+      return MyPromise.resolve(onFinally?.()).then(() => data);
+    }, (reason?: unknown) => {
+      return MyPromise.resolve(onFinally?.()).then(() => { throw reason })
+    });
+  }
+}
+```
+
+For `catch` we simply pass the callback to `then`.
+
+For `finally` we wrap it inside a Promise. And since finally doesn't override the value for the Promise.
+It just calls the callback passed to it. We chain `then` and return the original data or re-throw the original error.
+
+As always, you can also verify this using following snippet.
+
+```JavaScript
+const p = Promise.resolve('Original Value');
+p.finally(() => 'Override Value')
+ .then(value => console.log(value));
+
+/** Result **
+Original Value
+*/
+```
+
 ## Static methods in Promise
+
+<p align="center">
+    <img src="/images/blogs/promise-polyfill/wait-a-minute.jpg" 
+        width="250" height="250"
+        alt="Wait a minute"
+    />
+</p>
+
+I never implemented `MyPromise.resolve`! Lets implement it right away!
+
+```TypeScript
+class MyPromise<T> {
+  /**
+   * Return a Promise and resolve the Promise immediately
+   */
+  static resolve = <T>(data?: T) => {
+    return new MyPromise<T>((resolve) => {
+      resolve(data);
+    });
+  }
+}
+```
+
+As you can see its quite simple. We just create a new instance of MyPromise and resolve it with the passed data.
+Similarly we can implement `MyPromise.reject`.
+
+There are other static methods on promise as well like `all`, `race`, `any`, `allSettled`, `withResolver`, and `try`.
+If we implement all these then the post would become too long. So lets look at only `all` and remaining will have similar implementation.
+
+```TypeScript
+class MyPromise<T> {
+  /**
+   * Wait for all promises to resolve. Return array with resolution
+   * of each promise or value.
+   * Reject if any promise fails.
+   */
+  static all = (arr: Iterable<unknown>) => {
+    const array = [...arr];
+    let result = new Array(array.length);
+    let counter = 0;
+
+    return new MyPromise((resolve, reject) => {
+      if (array.length === 0) {
+        resolve([]);
+      }
+
+      const updateResult = (data: unknown, index: number) => {
+        result[index] = data;
+        counter++;
+        if (counter === array.length) {
+          resolve(result)
+        }
+      }
+
+      [...arr].forEach((item, index) => {
+        if (item instanceof MyPromise) {
+          item.then((data) => {
+            updateResult(data, index);
+          }, (reason) => reject(reason))
+        } else {
+          updateResult(item, index);
+        }
+      });
+    });
+  }
+}
+```
+
+Here we take an array as input. We keep a `counter` for resolved values. If the item of the array is not a Promise then
+we add it to our result immediately (at the position of its occurrence in the given input). Else, we wait for it to resolve
+and then add the resolved value in the result. Once we have all the values, we resolve with the result.
+
+If any promise is rejected then we reject the entire promise.
 
 ## Full implementation
 
-## Conclusion
+If you are looking for complete implementation in once place, then checkout my
+[git repository](https://github.com/pushkar8723/promise-polyfill/blob/main/src/MyPromise.ts). Here I have implemented the
+remaining static methods.
 
+## My 2 cents
 
+After this exercise, my appreciation for Promise API has increased many fold. I also discovered many new things
+about Promise. However, I still can't say that my implementation is 100% correct and there can be some inaccuracy or
+edge cases that I missed.
+
+If you spot any such error do let me know by [raising an issue](https://github.com/pushkar8723/promise-polyfill/issues/new).
+
+In case, you still have questions, please don't hesitate to get in touch with me on any social platform of your choice.
+If you like to share your implementation or share your experience with some edge case, I am all ears.
+
+And in case you are thinking whether Promise Polyfill is a good interview question? I am too wondering the same.
+While your opinion may vary. But my 2 cents would be that this is not a good question for interview. There are too
+many edge cases to get right in 45 minutes. And the more a candidate knows about Promise, the more disadvantage they
+are at. If some candidate miraculously does it in 45 minutes, I would have doubt that they have just memorized it.
+
+Anyway you are free to disagree with my points and if you are one of the interviewer who ask this question in interview.
+My only suggestion would be to define what is required clearly before asking the candidate to write the polyfill.

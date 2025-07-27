@@ -1,8 +1,8 @@
 ---
 title: Understanding Promise Chaining
-date: '2025-07-25'
+date: '2025-07-27'
 description: 'I thought I knew Promise, until I started writing a polyfill for it. And I am not alone. :D'
-keywords: 'Promise, Polyfill, Chaining'
+keywords: 'Promise, Promise Polyfill, Promise Chaining'
 featured: true
 ---
 
@@ -154,7 +154,7 @@ the promise with the error.
 
 ## Resolve and Reject
 
-Next Let's implement the resolve and reject function. For this we need do define few variables in our class.
+Next let's implement the resolve and reject function. For this we need do define few variables in our class.
 Since a Promise can be only one of the three state (`Pending`, `Fulfilled`, or `Rejected`) we need a `status` variable.
 And since we know that Promise value can be used long after it has settled, we should also store the value.
 For this I will create 2 variables, `successData` and `failureError`.
@@ -612,7 +612,7 @@ Original Value
     />
 </p>
 
-I never implemented `MyPromise.resolve`! Lets implement it right away!
+I never implemented `MyPromise.resolve`! Let's implement it right away!
 
 ```TypeScript
 class MyPromise<T> {

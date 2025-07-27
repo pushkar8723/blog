@@ -25,8 +25,8 @@ const Container = styled.div`
         }
 
         & li {
-            list-style: none;
             margin-bottom: 0px;
+            font-size: 14px;
         }
 
         & h4 {

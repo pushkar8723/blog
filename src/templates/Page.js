@@ -164,17 +164,6 @@ export function Head({ data: { mdx: post } }) {
     );
 }
 
-Head.propTypes = {
-    data: PropTypes.shape({
-        mdx: PropTypes.shape({
-            frontmatter: PropTypes.shape({
-                title: PropTypes.string.isRequired,
-                description: PropTypes.string,
-            }),
-        }),
-    }).isRequired,
-};
-
 export default PageTemplate;
 
 export const pageQuery = graphql`

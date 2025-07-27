@@ -157,7 +157,7 @@ the promise with the error.
 Next Let's implement the resolve and reject function. For this we need do define few variables in our class.
 Since a Promise can be only one of the three state (`Pending`, `Fulfilled`, or `Rejected`) we need a `status` variable.
 And since we know that Promise value can be used long after it has settled, we should also store the value.
-For this I am creating 2 variables, `successData` and `failureError`.
+For this I will create 2 variables, `successData` and `failureError`.
 
 ```TypeScript {2-7}
 class MyPromise<T> {
@@ -190,7 +190,7 @@ class MyPromise<T> {
 }
 ```
 
-Now Let's focus on resolve. As we know, we need to push the execution of resolve
+Now let's focus on resolve. As we know, we need to push the execution of resolve
 in a micro task queue, we will have to use `queueMicrotask` function. Inside this, we will
 have to update the status to `fulfilled` and also save the value passed to resolve function.
 It is also a good idea to check that Promise is in `pending` state, so that we don't override
@@ -294,14 +294,14 @@ Since adding the entire class for each small addition would make this post unnec
 in each snippet. If you want to follow along, I suggest copy the above snippet in a code editor and keep adding the highlighted
 delta in your file.
 
-While implementing `then`, we should take care of following things:
+While implementing `then`, we should take care of the following things:
 
 1. `then` function takes both success and failure callbacks.
 2. It should return a new Promise.
 3. `then` can be called on already settled Promise.
 4. A promise can have multiple `then` calls.
 
-For point #4, I am adding two arrays in my class `successCallbacks` and `catchCallbacks`. I will simply push callbacks
+For point #4, I will add two arrays in my class `successCallbacks` and `catchCallbacks`. I will simply push callbacks
 passed to `then` function in these array and call them when the promise is settled from the `resolve`/`reject` method.
 
 ```TypeScript{2-5,19-23,40-44}
@@ -355,7 +355,7 @@ class MyPromise<T> {
 }
 ```
 
-Here first 2 points are easy to implement as shown below:
+Here the first 2 points are easy to implement as shown below:
 
 ```TypeScript
 class MyPromise<T> {
@@ -442,7 +442,7 @@ class MyPromise<T> {
 }
 ```
 
-The `handle` function quite simple. We try to call the `callback` function with the `arg`. If it succeeds then we
+The `handle` function is quite simple. We try to call the `callback` function with the `arg`. If it succeeds then we
 resolve the Promise with the callback's returned value. If we encounter any issue then we reject the Promise with
 the encountered error.
 
@@ -553,7 +553,7 @@ class MyPromise<T> {
 
 ## Implementing `catch` and `finally`
 
-Now we have `then` implement in place along with chaining and unhandled rejection in place. We can easily implement
+Now we have `then` implemented in place along with chaining and unhandled rejection in place. We can easily implement
 `catch` and `finally` function to complete our Polyfill. For these we can simply reuse our `then` function, as shown
 in the snippet below.
 
@@ -630,8 +630,8 @@ class MyPromise<T> {
 As you can see its quite simple. We just create a new instance of MyPromise and resolve it with the passed data.
 Similarly we can implement `MyPromise.reject`.
 
-There are other static methods on promise as well like `all`, `race`, `any`, `allSettled`, `withResolver`, and `try`.
-If we implement all these then the post would become too long. So lets look at only `all` and remaining will have similar implementation.
+There are other static methods on Promise as well like `all`, `race`, `any`, `allSettled`, `withResolver`, and `try`.
+If we implement all these then the post would become too long. So let's look at only `all` and remaining will have similar implementation.
 
 ```TypeScript
 class MyPromise<T> {
@@ -680,13 +680,13 @@ If any promise is rejected then we reject the entire promise.
 
 ## Full implementation
 
-If you are looking for complete implementation in once place, then checkout my
+If you are looking for complete implementation in one place, then checkout my
 [git repository](https://github.com/pushkar8723/promise-polyfill/blob/main/src/MyPromise.ts). Here I have implemented the
 remaining static methods.
 
 ## My 2 cents
 
-After this exercise, my appreciation for Promise API has increased many fold. I also discovered many new things
+After this exercise, my appreciation for Promise API has increased manyfold. I also discovered many new things
 about Promise. However, I still can't say that my implementation is 100% correct and there can be some inaccuracy or
 edge cases that I missed.
 

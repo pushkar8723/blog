@@ -1,8 +1,8 @@
 ---
 title: Understanding Promise Chaining
-date: "2025-07-25"
-description: "I thought I know Promise, until I started writing a polyfill for it. And I am not alone. :D"
-keywords: "Promise, Polyfill, Chaining"
+date: '2025-07-25'
+description: 'I thought I knew Promise, until I started writing a polyfill for it. And I am not alone. :D'
+keywords: 'Promise, Polyfill, Chaining'
 featured: true
 ---
 
@@ -10,11 +10,11 @@ Let's be honest, nobody needs to write a polyfill for promise these days. Most o
 start preparing for interviews. Promise polyfill is among the most common questions asked in JavaScript interviews.
 As a consequence, there are endless blogs on this.
 
-So why am I writing this? 
+So why am I writing this?
 
-Well I found that most of them have implemented Promise wrong! Most common mistake that I find in these implementations is that they `return this`.
+Well, I found that most of them have implemented Promise wrong! Most common mistake that I find in these implementations is that they `return this`.
 However, if you go through [MDN docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise),
-it clearly state that [`then` returns a **new Promise**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then#return_value).
+it clearly states that [`then` returns a **new Promise**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then#return_value).
 
 So, in this post, I want to take you through my journey on what I feel is the correct implementation of promise.
 
@@ -48,9 +48,11 @@ parameter. This executor function will be passed resolve and reject callbacks to
 We have two private methods for resolve and reject as well.
 
 Before we start Implementing these methods, we must define how the Promise works. Let's list down the key behaviors:
+
 1. **Executor function should be run synchronously when the Promise is created.**<br/>
-One of the most common mistake I see calling the executor function inside `setTimeout`. When in reality the executor
-function is ran as soon as Promise is created. This can be verified by running following snippet in browser console.
+   One of the most common mistakes I see is calling the executor function inside `setTimeout`. When in reality the executor
+   function is run as soon as Promise is created. This can be verified by running following snippet in browser console.
+
 ```JavaScript
 console.log('Start');
 const p = new Promise((resolve) => {
@@ -67,16 +69,18 @@ End
 Promise Resolved
 */
 ```
+
 2. **`resolve` and `reject` should be pushed to micro task queue.**<br/>
-Another common mistake is using `setTimeout`. Promises are pushed to micro task queue where as
-`setTimeout` goes to macro task queue (or just task queue). I have seen few people describing this
-behavior as Promise having a higher priority. If this is something new to you and you want to understand
-this better, [I suggest you watch this awesome talk](https://www.youtube.com/watch?v=cCOL7MC4Pl0).
+   Another common mistake is using `setTimeout`. Promises are pushed to micro task queue where as
+   `setTimeout` goes to macro task queue (or just task queue). I have seen few people describing this
+   behavior as Promise having a higher priority. If this is something new to you and you want to understand
+   this better, [I suggest you watch this awesome talk](https://www.youtube.com/watch?v=cCOL7MC4Pl0).
 3. **`then`, `catch` and `finally` should return a new Promise.**
 4. **Multiple `then`, `catch` and `finally` can be added to same promise.**<br/>
-Though Promise can be resolved/rejected only once. We can attach multiple `then`, `catch`, `finally` blocks to it.
+   Though Promise can be resolved/rejected only once. We can attach multiple `then`, `catch`, `finally` blocks to it.
 5. **`then`, `catch` and `finally` can be called on a Promise, long after the Promise has been fulfilled/Rejected.**<br/>
-We can verify above 2 points using following code snippet.
+   We can verify above 2 points using following code snippet.
+
 ```JavaScript
 const p = Promise.resolve('Data');
 
@@ -94,9 +98,11 @@ Get 2: Data
 Get 3: Data
 */
 ```
+
 6. **If callbacks from `then`, `catch` and `finally` returns a promise then the returned Promise should be chained.**<br/>
-This means that we can even return a Promise from callbacks passed to `then`, `catch` and `finally` and still receive
-the resolved value of the returned Promise. Following snippet will demonstrate this.
+   This means that we can even return a Promise from callbacks passed to `then`, `catch` and `finally` and still receive
+   the resolved value of the returned Promise. Following snippet will demonstrate this.
+
 ```JavaScript
 const p = Promise.reject('Bad Request');
 p.then(() => console.log('What?'))
@@ -112,6 +118,7 @@ block is not Promise but the resolved value of the returned
 Promise.
 */
 ```
+
 7. **Unhandled rejection should be caught and logged in browser console.**
 8. **`finally` should be called in both resolution and rejection of the promise.**
 
@@ -140,6 +147,10 @@ class MyPromise<T> {
   private reject = (error?: unknown) => {}
 }
 ```
+
+To ensure synchronous call to executor function, I directly call it in the constructor. However there can be case
+where the executor function throws an error. For this I wrapped it in try catch block and on error, simply rejected
+the promise with the error.
 
 ## Resolve and Reject
 
@@ -276,15 +287,15 @@ class MyPromise<T> {
 }
 ```
 
-
 ## Implementing `then`
 
 The main challenge in implementing Promise Polyfill lies in `then`. Rest can be easily implemented using this `then` function.
 Since adding the entire class for each small addition would make this post unnecessarily long, I will only add the relevant changes
-in each snippet. If you want to follow along, I suggest copy the above snippet in a code editor and keep adding the highlighted 
+in each snippet. If you want to follow along, I suggest copy the above snippet in a code editor and keep adding the highlighted
 delta in your file.
 
 While implementing `then`, we should take care of following things:
+
 1. `then` function takes both success and failure callbacks.
 2. It should return a new Promise.
 3. `then` can be called on already settled Promise.
@@ -311,7 +322,7 @@ class MyPromise<T> {
         // Update status and store data
         this.status = 'fulfilled';
         this.successData = data;
-    
+
         // Call all success callbacks
         this.thenCallbacks.forEach(cb => cb(data));
         // Clear callbacks to avoid memory leaks
@@ -332,7 +343,7 @@ class MyPromise<T> {
         // Update status and store error
         this.status = 'rejected';
         this.failureError = error;
-  
+
         // Call all failure callbacks
         this.catchCallbacks.forEach(cb => cb(error));
         // Clear callbacks to avoid memory leaks
@@ -487,7 +498,7 @@ class MyPromise<T> {
           // Update status and store data
           this.status = 'fulfilled';
           this.successData = data;
-        
+
           // Call all success callbacks
           this.thenCallbacks.forEach(cb => cb(data));
           // Clear callbacks to avoid memory leaks
@@ -504,10 +515,11 @@ class MyPromise<T> {
 
 Another commonly ignored part about Promise is unhandled rejections. When a Promise's rejection is not handled,
 a [`unhandledrejection` Event](https://developer.mozilla.org/en-US/docs/Web/API/Window/unhandledrejection_event)
-is emitted on window. It will also contain reference to Promise and error. 
+is emitted on window. It will also contain reference to Promise and error.
 
 We can emit this event in our `reject` method when `catchCallbacks` is empty. However, I got lazy and didn't want
 to resolve `globalThis` for different environments JavaScript can run. So instead added a `console.error` instead. 😬
+Maybe I will implement it in future. 🙈
 
 ```TypeScript{14-17}
 class MyPromise<T> {
@@ -522,12 +534,12 @@ class MyPromise<T> {
         // Update status and store error
         this.status = 'rejected';
         this.failureError = error;
-  
+
         // Check for unhandled rejections
         if (this.catchCallbacks.length == 0) {
           console.error("Unhandled Reject");
         }
-  
+
         // Call all failure callbacks
         this.catchCallbacks.forEach(cb => cb(error));
         // Clear callbacks to avoid memory leaks
@@ -592,8 +604,10 @@ Original Value
 ## Static methods in Promise
 
 <p align="center">
-    <img src="/images/blogs/promise-polyfill/wait-a-minute.jpg" 
-        width="250" height="250"
+    <img
+        src="/images/blogs/promise-polyfill/wait-a-minute.jpg"
+        width="250"
+        height="250"
         alt="Wait a minute"
     />
 </p>

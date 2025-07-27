@@ -29,7 +29,7 @@ type ExecutorFn<T> = (
 ) => void;
 
 class MyPromise<T> {
-  constructor(executor: ExecutorFn) {}
+  constructor(executor: ExecutorFn<T>) {}
 
   /**
    * Called when Promise is resolved.
@@ -126,7 +126,7 @@ Now we can implement our constructor
 
 ```TypeScript{3-9}
 class MyPromise<T> {
-  constructor(executor: ExecutorFn) {
+  constructor(executor: ExecutorFn<T>) {
     // Call the executor synchronously
     try {
       executor(this.resolve, this.reject);
@@ -168,7 +168,7 @@ class MyPromise<T> {
   /** Stores error returned by the promise if it is rejected */
   private failureError?: unknown;
 
-  constructor(executor: ExecutorFn) {
+  constructor(executor: ExecutorFn<T>) {
     // Call the executor synchronously
     try {
       executor(this.resolve, this.reject);
@@ -205,7 +205,7 @@ class MyPromise<T> {
   /** Stores error returned by the promise if it is rejected */
   private failureError?: unknown;
 
-  constructor(executor: ExecutorFn) {
+  constructor(executor: ExecutorFn<T>) {
     // Call the executor synchronously
     try {
       executor(this.resolve, this.reject);
@@ -247,7 +247,7 @@ class MyPromise<T> {
   /** Stores error returned by the promise if it is rejected */
   private failureError?: unknown;
 
-  constructor(executor: ExecutorFn) {
+  constructor(executor: ExecutorFn<T>) {
     // Call the executor synchronously
     try {
       executor(this.resolve, this.reject);

@@ -179,16 +179,16 @@ const stream = new ReadableStream({
           controller.enqueue(decryptedData);
 
           // Is there more data to read?
-            push();
-          } else {
-            // All done, rest!
-            controller.close();
-          }
-        });
-      };
+          push();
+        } else {
+          // All done, rest!
+          controller.close();
+        }
+      });
+    };
 
-      push();
-    }
+    push();
+  }
 });
 return URL.createObjectURL(await new Response(stream).blob());
 ```

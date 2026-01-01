@@ -60,7 +60,7 @@ with others, when rendered on the server, or when used by keyboard-only users.
 Semantic HTML gives you for free:
 
 - Keyboard navigation (Tab, Enter, Space) for buttons, inputs, links.
-- Screen reader semantics (a `<button>` is announced as a button, a`<select>` as a combo box).
+- Screen reader semantics (a `<button>` is announced as a button, a `<select>` as a combo box).
 - Native form integration (labels, required fields, validation, and submit behavior).
 - Predictable behavior across browsers and SSR.
 
@@ -164,14 +164,13 @@ export default Input;
 
 Why this works well:
 
-- Label is automatically associated with then input when provided.
+- Label is automatically associated with the input when provided.
 - Uses a real `<input>`, so you get native events, validation, autofill, and password manager integration.
 - Uses id plus `aria-describedby` to connect the error message to the input. Screen readers read them together.
 - Uses role="alert" so new error messages are announced as soon as they appear.
 
-With form libraries like React Hook Form, this component plugs in with almost no extra work.legacy.
+With form libraries like React Hook Form, this component plugs in with almost no extra work.
 
-This section should do what you want: clearly show both `<select>` and a custom dropdown, and push virtualization to the NFUI doc.
 
 ---
 
@@ -567,7 +566,7 @@ Now lets re-consider the example task that I mentioned in this blog post.
 
 > Add delete functionality for list items which is being rendered in a drawer.
 
-For this, the developer can directly render the button in each list time.
+For this, the developer can directly render the button in each list item.
 When the delete button is clicked, imperative `ConfirmDialog` can be shown.
 `ConfirmDialog` will use `LayerManager` to stack above the `Drawer`.
 And once user confirms, the delete API can be called or simply close the dialog
@@ -586,7 +585,7 @@ Under the hood, NFUI also:
 
 ## Where to explore further
 
-If you are interested then your can checkout `no-frills-ui` [repository](https://github.com/pushkar8723/no-frills-ui) or
+If you are interested then you can check out `no-frills-ui` [repository](https://github.com/pushkar8723/no-frills-ui) or
 skim through [the storybook doc](https://nfui.js.org)
 
 If anything in this post feels off, unclear, or incomplete, or if you have another pattern you think belongs here, please leave a comment.

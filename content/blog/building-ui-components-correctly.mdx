@@ -1,0 +1,593 @@
+---
+title: 'Building UI components correctly: A Practical Guide'
+date: '2026-01-01'
+description: 'What I learned as a frontend engineer by doing things wrong.'
+keywords: 'UI design fundamentals, React component best practices, Semantic HTML, Accessible components'
+featured: true
+---
+
+Today, a few lines of prompt are enough to generate a working React component, a form, or even an entire page.
+Tools can scaffold JSX, props, hooks, and even ARIA attributes faster than any human can type.
+That makes it very tempting to treat UI development as a copy–paste and glue exercise.
+Yet the basics still matter, because the hardest bugs are the ones where the code looks fine.
+Consider the humble `<button>`. In HTML, a `<button>` without an explicit type defaults to `type="submit"`
+when it’s inside a form. Click it, and the browser will happily submit the form, even if your intent was
+"just close the dialog", "open a drawer", or "go to the next step." This isn’t a React quirk or a library bug;
+it’s the platform’s default behavior.
+
+AI generator can spit out:
+
+```tsx
+<button onClick={handleClick}>Next</button>
+```
+
+It works in isolation. Months later, someone wraps that area in a `<form>` for validation,
+and “Next” suddenly starts submitting the form. Without knowing the default behavior of `<button>`,
+debugging this turns into superstition rather than understanding.
+
+In this post, I aim to go through few of those fundamentals, the things AI can help you type, but not truly reason about for you.
+Creating a component seems simple: render some JSX, add some CSS, ship it. But in practice, even a "simple"
+button or input carries surprising complexity.
+
+Consider a seemingly trivial task: "Add delete functionality for list items which is being rendered in a drawer".
+For this, the most basic component would be a button. This button needs to:
+
+- Be reusable: the same button component must work in different contexts: a table, a card, a modal, a sidebar.
+- Render correctly: visually consistent, right size, proper color.
+- Behave correctly: trigger a confirmation dialog when clicked.
+- Stack properly: the confirmation dialog must appear on top of the drawer, with correct z-index handling.
+- Work with forms: the button should behave correctly inside a form, respecting form submission.
+- Support theming: colors should change when the app switches to dark mode.
+- Support SSR: if you render your app on the server, the button must hydrate correctly on the client.
+- Forward refs and props: consumers might need imperative access or want to pass custom ARIA attributes.
+- Handle accessibility: keyboard users should be able to use it, screen reader users should understand what it does.
+- Support internationalization: text should adapt to different languages without modifying the component.
+
+A single component touches concerns across styling, state management, SEO, accessibility, infrastructure,
+and composability. This post walks through those considerations using concrete examples: a button, an input,
+and a dropdown.
+
+The examples use React, but the principles are universal and apply to component libraries built in Vue, Svelte,
+Angular, or any other framework. The fundamentals of semantic HTML, keyboard navigation, accessibility, and thoughtful
+API design transcend whatever happens to generate your JSX.
+
+## Why these details matter
+
+When building components, you are not just building visual elements. You are building the foundation that other
+developers will depend on. A component that works perfectly in isolation might break in unexpected ways when combined
+with others, when rendered on the server, or when used by keyboard-only users.
+
+Semantic HTML gives you for free:
+
+- Keyboard navigation (Tab, Enter, Space) for buttons, inputs, links.
+- Screen reader semantics (a `<button>` is announced as a button, a`<select>` as a combo box).
+- Native form integration (labels, required fields, validation, and submit behavior).
+- Predictable behavior across browsers and SSR.
+
+When you throw that away and replace everything with `<div>` plus onClick, you are re-implementing the browser.
+That means more code, more bugs, and more edge cases—exactly the kind of work that AI is bad at validating for you.
+
+## Button – small component, big consequences
+
+A button should:
+
+- Respond to Enter and Space keys.
+- Be announced as a “button” to screen readers.
+- Show clear focus styles.
+- Respect disabled state both visually and semantically.
+
+Implementation:
+
+```tsx
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'danger';
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant = 'primary', type = 'button', ...props }, ref) => (
+    <button
+      className={`btn btn-${variant} ${className || ''}`}
+      type={type}
+      ref={ref}
+      {...props}
+    />
+  )
+);
+
+Button.displayName = 'Button';
+export default Button;
+```
+
+Key decisions:
+
+1. Use real `<button>` — This gives you correct keyboard behavior, semantics, and form integration out of the box.
+2. Default `type="button"` — In HTML, the missing-value default for `<button>` is submit, which will submit the form
+   when clicked if it’s inside a `<form>`. Defaulting to `type="button"` in your component prevents accidental form
+   submissions and forces submit buttons to opt in.
+3. Prop spreading — Extending `ButtonHTMLAttributes` and spreading `...props` lets consumers use any native attribute:
+   `disabled`, `aria-*`, `form`, `name`, etc.
+4. Ref forwarding — Consumers can focus the button programmatically or integrate it with other imperative APIs.
+
+That `type="button"` decision is a good example of basics that AI won’t catch for you: it will happily generate a
+component that works in a Storybook story, but will fail in subtle ways once someone uses it inside a real form.
+
+## Input – getting forms right
+
+Inputs are where "div soup" really breaks things.
+An input should:
+
+- Be associated with a `<label>` so assistive tech can announce it.
+- Support browser validation (`required`, `pattern`, `minLength`, etc.).
+- Integrate with form libraries and password managers.
+- Communicate errors clearly to both sighted users and screen readers.
+
+Implementation:
+
+```tsx
+import React, { useId } from 'react';
+
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  error?: string;
+}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, error, id, label, ...props }, ref) => {
+    const reactId = useId();
+
+    const inputId = id || `input-${reactId}`;
+
+    return (
+      <div className="input-wrapper">
+        {label && <label htmlFor={inputId}>{label}</label>}
+        <input
+          id={inputId}
+          className={`input ${error ? 'input--error' : ''} ${className || ''}`}
+          ref={ref}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${inputId}-error` : undefined}
+          {...props}
+        />
+        {error && (
+          <span id={`${inputId}-error`} role="alert">
+            {error}
+          </span>
+        )}
+      </div>
+    );
+  }
+);
+
+Input.displayName = 'Input';
+export default Input;
+```
+
+Why this works well:
+
+- Label is automatically associated with then input when provided.
+- Uses a real `<input>`, so you get native events, validation, autofill, and password manager integration.
+- Uses id plus `aria-describedby` to connect the error message to the input. Screen readers read them together.
+- Uses role="alert" so new error messages are announced as soon as they appear.
+
+With form libraries like React Hook Form, this component plugs in with almost no extra work.legacy.
+
+This section should do what you want: clearly show both `<select>` and a custom dropdown, and push virtualization to the NFUI doc.
+
+---
+
+## Dropdown / Combobox – native first, custom when needed
+
+Dropdowns are where component complexity spikes. There are really three levels:
+
+1. Native `<select>` (best default)
+2. Custom dropdown / combobox (when design requires it)
+3. Virtualized dropdown (when data size requires it)
+
+### Native `<select>` – start here
+
+If you can get away with a native `<select>`, you should. It has excellent built-in accessibility,
+keyboard support, and form integration.
+
+```tsx
+interface SelectOption {
+  label: string;
+  value: string;
+}
+
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  label?: string;
+  options: SelectOption[];
+  error?: string;
+}
+
+const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
+  ({ label, id, options, error, className, ...props }, ref) => {
+    const reactId = React.useId();
+    const selectId = id || `select-${reactId}`;
+
+    return (
+      <div className="select-wrapper">
+        {label && <label htmlFor={selectId}>{label}</label>}
+        <select
+          id={selectId}
+          ref={ref}
+          className={`select ${error ? 'select--error' : ''} ${className || ''}`}
+          aria-invalid={!!error}
+          aria-describedby={error ? `${selectId}-error` : undefined}
+          {...props}
+        >
+          {options.map(opt => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        {error && (
+          <span id={`${selectId}-error`} role="alert">
+            {error}
+          </span>
+        )}
+      </div>
+    );
+  }
+);
+
+Select.displayName = 'Select';
+export default Select;
+```
+
+**Why this is often enough:**
+
+- Keyboard support (Tab, Arrow keys, Home/End, typeahead) is built-in.
+- Screen readers know exactly how to announce it.
+- Works seamlessly with forms, validation, and autofill.
+
+If your design system allows using the browser’s native select (possibly with minimal styling),
+this should be your default.
+
+### Custom dropdown / combobox – when design demands it
+
+When you truly need a fully custom dropdown (multi-column options, icons, complex layout), you are essentially
+implementing the WAI-ARIA **combobox** pattern.
+
+At a minimum, you need:
+
+- A button or input that acts as the **combobox**:
+  - `role="combobox"`
+  - `aria-expanded` (true/false)
+  - `aria-controls` pointing at the popup listbox
+- A popup with:
+  - `role="listbox"`
+  - Each option having `role="option"`
+  - `aria-selected` to track the active option
+- Keyboard support:
+  - Down/Up to move between options
+  - Enter/Space to select
+  - Escape to close
+  - Tab to move focus out
+
+**A simple custom dropdown (select-only combobox):**
+
+```tsx
+interface DropdownOption {
+  value: string;
+  label: string;
+}
+
+interface DropdownProps {
+  label?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+  options: DropdownOption[];
+  placeholder?: string;
+}
+
+const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(
+  ({ label, value, onChange, options }, ref) => {
+    // States
+    const [isOpen, setIsOpen] = React.useState(false);
+    const [highlightedIndex, setHighlightedIndex] = React.useState(0);
+
+    // Ref to the trigger button
+    const buttonRef = React.useRef<HTMLButtonElement | null>(null);
+
+    // Dropdown ID
+    const listboxId = React.useId();
+
+    // Currently selected option
+    const selectedOption = options.find(opt => opt.value === value);
+
+    /** Opens / closes the dropdown */
+    const toggleOpen = () => setIsOpen(prev => !prev);
+
+    /** Closes the dropdown */
+    const close = () => setIsOpen(false);
+
+    /**
+     * Handler function called when an item is selected.
+     */
+    const handleSelect = (option: DropdownOption) => {
+      onChange?.(option.value);
+      close();
+      buttonRef.current?.focus();
+    };
+
+    /**
+     * This function is responsible for keyboard accessibility.
+     */
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (!isOpen) {
+        if (
+          e.key === 'ArrowDown' ||
+          e.key === 'ArrowUp' ||
+          e.key === ' ' ||
+          e.key === 'Enter'
+        ) {
+          e.preventDefault();
+          setIsOpen(true);
+          setHighlightedIndex(0);
+        }
+        return;
+      }
+
+      switch (e.key) {
+        case 'ArrowDown':
+          // Highlight next item
+          e.preventDefault();
+          setHighlightedIndex(prev => Math.min(prev + 1, options.length - 1));
+          break;
+        case 'ArrowUp':
+          // Highlight previous item
+          e.preventDefault();
+          setHighlightedIndex(prev => Math.max(prev - 1, 0));
+          break;
+        case 'Enter':
+        case ' ':
+          // Select item
+          e.preventDefault();
+          handleSelect(options[highlightedIndex]);
+          break;
+        case 'Escape':
+          // Close dropdown
+          e.preventDefault();
+          close();
+          buttonRef.current?.focus();
+          break;
+        default:
+          break;
+      }
+    };
+
+    return (
+      <div className="dropdown" ref={ref}>
+        {label && <div className="dropdown__label">{label}</div>}
+
+        <button
+          type="button"
+          ref={buttonRef}
+          className="dropdown__button"
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          aria-controls={listboxId}
+          role="combobox"
+          onClick={toggleOpen}
+          onKeyDown={handleKeyDown}
+        >
+          {selectedOption ? selectedOption.label : placeholder}
+        </button>
+
+        {isOpen && (
+          <ul id={listboxId} role="listbox" className="dropdown__listbox">
+            {options.map((option, index) => (
+              <li
+                key={option.value}
+                role="option"
+                aria-selected={value === option.value}
+                className={
+                  'dropdown__option' +
+                  (index === highlightedIndex
+                    ? ' dropdown__option--highlighted'
+                    : '')
+                }
+                onMouseDown={e => {
+                  // prevent button blur before click
+                  e.preventDefault();
+                  handleSelect(option);
+                }}
+              >
+                {option.label}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
+);
+
+Dropdown.displayName = 'Dropdown';
+export default Dropdown;
+```
+
+This is a **select-only combobox**, which matches a lot of “styled select” requirements while
+staying close to the ARIA Authoring Practices.
+
+As you can see, the moment we move away from native
+component, we need to add significant amount of code to mimic browser.
+
+### Large lists – performance concerns creep in
+
+All the patterns above assume a reasonable number of options. Once you cross a few hundred items,
+a naive implementation starts to hurt:
+
+Rendering hundreds or thousands of `<li>` elements on every open/close or filter causes noticeable jank,
+especially on lower-end devices.​
+Keyboard navigation becomes sluggish because every Arrow key press can trigger a large re-render.
+If each option is a complex React tree (avatars, icons, metadata), your dropdown can quietly become one of the
+heaviest parts of the page.
+​
+At that point you want virtualization: only render the items that are visible (plus a small buffer), and recycle DOM
+nodes as the user scrolls. Libraries like react-window are designed exactly for this.
+
+It would be too complex to have this implementation in this blog post, but if you are interested you can check this
+[codesandbox example](https://codesandbox.io/p/sandbox/agitated-knuth-ffz2hs) where I have integrated
+[`react-window`](https://react-window.vercel.app/) with a
+[Dropdown](https://github.com/pushkar8723/no-frills-ui/blob/main/src/components/Input/Dropdown.tsx) component that
+I created.
+
+## Component checklist
+
+To summarize, following are the things that I consider while creating a component.
+
+Design:
+
+- Pick the correct semantic base element.
+- Decide how keyboard navigation should work.
+- List all meaningful states (loading, error, disabled, empty, etc.).
+- Identify which text should be overridable for i18n.
+
+Implementation:
+
+- Use semantic elements (`button`, `input`, `label`, `select`, `ul`/`li`).
+- Implement keyboard behavior explicitly where the platform doesn’t provide it.
+- Wire ARIA attributes (`roles`, `aria-expanded`, `aria-describedby`, `aria-invalid`).
+- Extend native attribute types and spread `...props`.
+- Forward refs for components that might need focus control.
+
+Accessibility & UX:
+
+- Tab reaches all interactive elements in a sensible order.
+- Focus styles are visible and not removed.
+- Error messages are linked and read with inputs.
+- Test with at least one real screen reader.
+
+Testing & Docs:
+
+- Use React Testing Library to test behavior, not implementation details.
+- Run a basic axe-core or similar accessibility audit in CI.
+- Document keyboard and ARIA behavior.
+
+## Putting it all together: `no-frills-ui`
+
+[No Frills UI](https://nfui.js.org) is a small React component library that I built as a learning project to apply these principles
+in a real codebase—and to treat even a "toy" library with production discipline (tests, docs, CI, releases).
+
+Following are few UI development challenges that I solved while building this library.
+
+### CSS variables instead of ThemeProvider
+
+NFUI uses CSS variables for theming:
+
+```css
+:root {
+  --nfui-primary: #2563eb;
+  --nfui-background: #ffffff;
+}
+
+[data-theme='dark'] {
+  --nfui-primary: #60a5fa;
+  --nfui-background: #1f2937;
+}
+```
+
+Components consume `var(--nfui-primary)` etc., so switching theme is as simple as toggling a data attribute on `<html>`, no React re-render, no theme context.
+
+### i18n-ready by design
+
+Components that render text (Dialogs, toasts, etc.) expose those strings as props. This keeps the library locale-agnostic
+and lets consumers plug in whichever i18n system they already use.
+
+### Dialogs with a promise-based API
+
+A common issue I have seen across projects is when we need to confirm a delete action. Often a modal is shown for
+this confirmation and then the delete API is called. For this an `open` state is maintained for the modal. Inside
+the modal click handlers for `confirm` and `cancel` button is wired. Finally a `onConfirm` and `onClose` callbacks
+are exposed as prop. This when done at multiple places, leads to major code bloat.
+
+Some of this can be moved to a reusable `ConfirmDialog` component. However, you still need to maintain `open`, `onConfirm`
+and `onClose` callbacks. Not to mention, the delete code flow get fragmented into multiple callbacks.
+
+This is the issue with declarative approach. And so to solve this I took an imperative approach.
+
+Instead of wiring `isOpen`, `onConfirm`, `onClose` state everywhere, NFUI exposes an imperative API:
+
+```tsx
+import { useRef } from 'react';
+import { ConfirmDialog } from 'no-frills-ui';
+
+const confirmDialog = useRef<ConfirmDialog>();
+
+
+const deleteHandler = async () => {
+  try {
+    await confirmDialog.current.show();
+    // Call delete API
+  } catch (e) {
+    // User cancelled the operation
+  }
+}
+
+// render
+<button type="button" onClick={deleteHandler}>Delete</button>
+<ConfirmDialog
+  ref={confirmDialog}
+  header='Delete item'
+  body={`Are you sure you want to delete this item?`}
+/>
+
+```
+
+Here, an imperative ref is used for the dialog. Dialog maintains all the state and click handlers.
+The `show` function in `ConfirmDialog` returns a promise. The promise is resolved when the user confirms
+else it is rejected.
+
+This reduces the code by a significant amount and also the entire delete logic is in one function called `deleteHandler`.
+
+Similar approach is taken for `AlertDialog`, `PromptDialog`, `Notification` and `Toast` components. This reduces effort required
+to pass feedback to user whenever an async action completes.
+
+### LayerManager: inspired by `react-layers-manager`
+
+Managing z-index for modals, dialogs, drawers, notifications, and toasts quickly becomes chaotic.
+NFUI uses a LayerManager service that:
+
+- Registers each new “layered” component (dialogs, drawers, etc.).
+- Assigns z-index based on open order.
+- Ensures only the topmost layer is interactable.
+- Cleans up when components close.
+
+This idea was inspired by [`react-layers-manager`](https://github.com/giuseppeg/react-layers-manager),
+which centralizes layer and portal management to avoid ad-hoc `z-index` wars. NFUI’s version is smaller and customized,
+but the core concept—centralizing stacking and focus—comes from that prior work.
+
+What this means is that developer using `no-frills-ui` component will never have to worry about the `z-index`.
+All `no-frills-ui`'s stackable components uses this layer manager to get their layer.
+
+Now lets re-consider the example task that I mentioned in this blog post.
+
+> Add delete functionality for list items which is being rendered in a drawer.
+
+For this, the developer can directly render the button in each list time.
+When the delete button is clicked, imperative `ConfirmDialog` can be shown.
+`ConfirmDialog` will use `LayerManager` to stack above the `Drawer`.
+And once user confirms, the delete API can be called or simply close the dialog
+if user rejects, and the focus goes back to drawer in either case.
+
+This is what a properly engineered set of components can enable. AI can generate code
+for all these faster than any human but only a human think of the bigger picture and
+plan ahead to achieve the goal with fewer lines of code and fewer lines of code means
+fewer bugs and better maintainability.
+
+Under the hood, NFUI also:
+
+- Uses GitHub Actions to run tests and lint on every PR.
+- Uses tag-protected releases, so only admins can publish versions.
+- Publishes Storybook to GitHub Pages and archives docs per version.
+
+## Where to explore further
+
+If you are interested then your can checkout `no-frills-ui` [repository](https://github.com/pushkar8723/no-frills-ui) or
+skim through [the storybook doc](https://nfui.js.org)
+
+If anything in this post feels off, unclear, or incomplete, or if you have another pattern you think belongs here, please leave a comment.
+Component design is nuanced, and catching mistakes or blind spots is much easier when more eyes (and more contexts) are involved.

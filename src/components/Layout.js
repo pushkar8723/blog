@@ -171,9 +171,9 @@ function Layout({ location, title, children }) {
                             className="global-wrapper"
                             data-is-root-path={isRootPath}
                         >
-                            <header className="global-header">
+                            <header className="global-header" role="banner">
                                 <HomeLink>{header}</HomeLink>
-                                <Navbar>
+                                <Navbar role="navigation" aria-label="Main Navigation">
                                     <Links>
                                         {pages.map(({ node }) => (
                                             <PageLink
@@ -195,6 +195,7 @@ function Layout({ location, title, children }) {
                                                 href={`https://facebook.com/${facebook}`}
                                                 target="_blank"
                                                 rel="noreferrer noopener"
+                                                aria-label='facebook'
                                             >
                                                 <FontAwesomeIcon
                                                     icon={faFacebook}
@@ -213,6 +214,7 @@ function Layout({ location, title, children }) {
                                                 href={`https://instagram.com/${instagram}`}
                                                 target="_blank"
                                                 rel="noreferrer noopener"
+                                                aria-label='instagram'
                                             >
                                                 <FontAwesomeIcon
                                                     icon={faInstagram}
@@ -228,9 +230,10 @@ function Layout({ location, title, children }) {
                                     {twitter && (
                                         <>
                                             <a
-                                                href={`https://twitter.com/${twitter}`}
+                                                href={`https://x.com/${twitter}`}
                                                 target="_blank"
                                                 rel="noreferrer noopener"
+                                                aria-label='x (formerly twitter)'
                                             >
                                                 <FontAwesomeIcon
                                                     icon={faTwitter}
@@ -249,6 +252,7 @@ function Layout({ location, title, children }) {
                                                 href={`https://github.com/${github}`}
                                                 target="_blank"
                                                 rel="noreferrer noopener"
+                                                aria-label='github'
                                             >
                                                 <FontAwesomeIcon
                                                     icon={faGithub}
@@ -267,6 +271,7 @@ function Layout({ location, title, children }) {
                                                 href={`https://www.linkedin.com/${linkedin}`}
                                                 target="_blank"
                                                 rel="noreferrer noopener"
+                                                aria-label='linkedin'
                                             >
                                                 <FontAwesomeIcon
                                                     icon={faLinkedinIn}
@@ -279,7 +284,10 @@ function Layout({ location, title, children }) {
                                             {' | '}
                                         </>
                                     )}
-                                    <a href="/rss.xml">
+                                    <a 
+                                        href="/rss.xml" 
+                                        aria-label='rss'
+                                    >
                                         <FontAwesomeIcon
                                             icon={faRss}
                                             style={{

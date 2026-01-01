@@ -6,4 +6,13 @@
   "singleQuote": true,
   "trailingComma": "es5",
   "printWidth": 80
+,
+  "overrides": [
+    {
+      "files": "content/blog/*.mdx",
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
 }

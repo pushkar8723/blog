@@ -20,9 +20,4 @@ export default function ExternalLink(props) {
 
 ExternalLink.propTypes = {
     href: PropTypes.string.isRequired,
-    children: PropTypes.node,
-};
-
-ExternalLink.defaultProps = {
-    children: null,
 };

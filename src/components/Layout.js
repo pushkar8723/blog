@@ -4,13 +4,13 @@ import { Helmet } from 'react-helmet';
 import { Link, StaticQuery, graphql } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faTwitter,
     faGithub,
     faLinkedinIn,
     faFacebook,
     faInstagram,
+    faXTwitter,
 } from '@fortawesome/free-brands-svg-icons';
-import { faCopyright, faRss } from '@fortawesome/free-solid-svg-icons';
+import { faCopyright, faRss, faX } from '@fortawesome/free-solid-svg-icons';
 import styled, { createGlobalStyle } from 'styled-components';
 
 // eslint-disable-next-line no-underscore-dangle
@@ -146,21 +146,24 @@ function Layout({ location, title, children }) {
                 const pages = data.pages.edges;
                 return (
                     <>
-                        <GlobalStyle />
-                        <Helmet>
+                        <GlobalStyle key="global-style" />
+                        <Helmet key="meta">
                             {isRootPath ? (
                                 <meta name="twitter:card" content="summary" />
                             ) : (
                                 [
                                     <meta
+                                        key="twitter-card-summary-large-image"
                                         name="twitter:card"
                                         content="summary_large_image"
                                     />,
                                     <meta
+                                        key="twitter-card-image-src"
                                         name="twitter:image:src"
                                         content={`${data.site.siteMetadata.siteUrl}${location.pathname}twitter-card.jpg`}
                                     />,
                                     <meta
+                                        key="og-image"
                                         name="og:image"
                                         content={`${data.site.siteMetadata.siteUrl}${location.pathname}twitter-card.jpg`}
                                     />,
@@ -168,6 +171,7 @@ function Layout({ location, title, children }) {
                             )}
                         </Helmet>
                         <div
+                            key="content-wrapper"
                             className="global-wrapper"
                             data-is-root-path={isRootPath}
                         >
@@ -236,10 +240,10 @@ function Layout({ location, title, children }) {
                                                 href={`https://x.com/${twitter}`}
                                                 target="_blank"
                                                 rel="noreferrer noopener"
-                                                aria-label="x (formerly twitter)"
+                                                aria-label="X (formerly twitter)"
                                             >
                                                 <FontAwesomeIcon
-                                                    icon={faTwitter}
+                                                    icon={faXTwitter}
                                                     style={{
                                                         width: '16px',
                                                         height: '16px',

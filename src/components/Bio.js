@@ -51,7 +51,7 @@ function Bio() {
                 alt="Profile picture"
             />
             {author?.name && (
-                <p>
+                <div>
                     Written by <strong>{author.name}</strong>
                     <div>
                         Passionate{' '}
@@ -63,7 +63,7 @@ function Bio() {
                         />{' '}
                         Developer
                     </div>
-                </p>
+                </div>
             )}
         </div>
     );

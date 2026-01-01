@@ -559,20 +559,17 @@ but the core concept—centralizing stacking and focus—comes from that prior w
 What this means is that developer using `no-frills-ui` component will never have to worry about the `z-index`.
 All `no-frills-ui`'s stackable components uses this layer manager to get their layer.
 
-Now lets re-consider the example task that I mentioned in this blog post.
+Remember that “delete button inside a drawer” from the start? By this point, you have all the pieces:
+a Button that won’t accidentally submit forms, a Dialog that can confirm via a simple await confirmDialog.current.show(...),
+and a LayerManager that guarantees the dialog stacks correctly over the drawer.
+The point isn’t just how each component works in isolation, but how they combine into boring,
+predictable behavior in real UI flows.
 
-> Add delete functionality for list items which is being rendered in a drawer.
-
-For this, the developer can directly render the button in each list item.
-When the delete button is clicked, imperative `ConfirmDialog` can be shown.
-`ConfirmDialog` will use `LayerManager` to stack above the `Drawer`.
-And once user confirms, the delete API can be called or simply close the dialog
-if user rejects, and the focus goes back to drawer in either case.
-
-This is what a properly engineered set of components can enable. AI can generate code
-for all these faster than any human but only a human think of the bigger picture and
-plan ahead to achieve the goal with fewer lines of code and fewer lines of code means
-fewer bugs and better maintainability.
+This is what a well-engineered set of components enables: each piece does one thing well,
+and they compose cleanly to solve a real UI problem with very little glue code. AI can absolutely
+generate the JSX for a button, a dialog, or even a drawer faster than any human—but only a human
+can see the bigger picture, choose the right semantics and patterns, and design an API that solves
+the problem with fewer lines of code, fewer bugs, and better long-term maintainability.
 
 Under the hood, NFUI also:
 

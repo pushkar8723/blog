@@ -1,10 +1,13 @@
 ---
 title: 'Building UI Components Correctly in the Age of AI'
-date: '2026-01-01'
+date: '2026-01-05'
 description: 'What I learned as a frontend engineer by doing things wrong.'
 keywords: 'UI design fundamentals, React component best practices, Semantic HTML, Accessible components'
 featured: true
 ---
+
+> TL;DR: Let AI write the JSX, but you still need to understand the fundamentals—semantic HTML, defaults
+> like type="submit", ARIA, and keyboard behavior—if you want your components to be correct and reliable.
 
 Today, a few lines of prompt are enough to generate a working React component, a form, or even an entire page.
 Tools can scaffold JSX, props, hooks, and even ARIA attributes faster than any human can type.
@@ -22,12 +25,23 @@ AI generator can spit out:
 ```
 
 It works in isolation. Months later, someone wraps that area in a `<form>` for validation,
-and “Next” suddenly starts submitting the form. Without knowing the default behavior of `<button>`,
+and "Next" suddenly starts submitting the form. Without knowing the default behavior of `<button>`,
 debugging this turns into superstition rather than understanding.
+
+<p align="center">
+  <img
+    src="/images/blogs/building-ui-components-correctly/vibe-coding.jpeg"
+    alt="vibe coding meme: telling cursor to fix vs understanding the issue"
+    width="379"
+    height="350"
+  />
+</p>
 
 In this post, I aim to go through few of those fundamentals, the things AI can help you type, but not truly reason about for you.
 Creating a component seems simple: render some JSX, add some CSS, ship it. But in practice, even a "simple"
 button or input carries surprising complexity.
+
+## Lets take an example
 
 Consider a seemingly trivial task: "Add delete functionality for list items which is being rendered in a drawer".
 For this, the most basic component would be a button. This button needs to:
@@ -64,7 +78,16 @@ Semantic HTML gives you for free:
 - Native form integration (labels, required fields, validation, and submit behavior).
 - Predictable behavior across browsers and SSR.
 
-When you throw that away and replace everything with `<div>` plus onClick, you are re-implementing the browser.
+<p align="center">
+  <img
+    src="/images/blogs/building-ui-components-correctly/this-is-a-button.jpeg"
+    alt="Using div as button meme"
+    width="278"
+    height="250"
+  />
+</p>
+
+When you throw that away and replace everything with `<div>` plus `onClick`, you are re-implementing the browser.
 That means more code, more bugs, and more edge cases—exactly the kind of work that AI is bad at validating for you.
 
 ## Button – small component, big consequences
@@ -72,7 +95,7 @@ That means more code, more bugs, and more edge cases—exactly the kind of work 
 A button should:
 
 - Respond to Enter and Space keys.
-- Be announced as a “button” to screen readers.
+- Be announced as a "button" to screen readers.
 - Show clear focus styles.
 - Respect disabled state both visually and semantically.
 
@@ -405,7 +428,7 @@ Dropdown.displayName = 'Dropdown';
 export default Dropdown;
 ```
 
-This is a **select-only combobox**, which matches a lot of “styled select” requirements while
+This is a **select-only combobox**, which matches a lot of "styled select" requirements while
 staying close to the ARIA Authoring Practices.
 
 As you can see, the moment we move away from native
@@ -423,7 +446,7 @@ If each option is a complex React tree (avatars, icons, metadata), your dropdown
 heaviest parts of the page.
 ​
 At that point you want virtualization: only render the items that are visible (plus a small buffer), and recycle DOM
-nodes as the user scrolls. Libraries like react-window are designed exactly for this.
+nodes as the user scrolls. Libraries like `react-window` are designed exactly for this.
 
 It would be too complex to have this implementation in this blog post, but if you are interested you can check this
 [codesandbox example](https://codesandbox.io/p/sandbox/agitated-knuth-ffz2hs) where I have integrated
@@ -544,11 +567,20 @@ to pass feedback to user whenever an async action completes.
 
 ### LayerManager: inspired by `react-layers-manager`
 
-Managing z-index for modals, dialogs, drawers, notifications, and toasts quickly becomes chaotic.
+<p align="center">
+  <img
+    src="/images/blogs/building-ui-components-correctly/z-index.jpeg"
+    alt="z-index meme: increasing z-index to a high value and still not able to see the div"
+    width="237"
+    height="218"
+  />
+</p>
+
+Managing `z-index` for modals, dialogs, drawers, notifications, and toasts quickly becomes chaotic.
 NFUI uses a LayerManager service that:
 
-- Registers each new “layered” component (dialogs, drawers, etc.).
-- Assigns z-index based on open order.
+- Registers each new "layered" component (dialogs, drawers, etc.).
+- Assigns `z-index` based on open order.
 - Ensures only the topmost layer is interactable.
 - Cleans up when components close.
 
@@ -559,8 +591,10 @@ but the core concept—centralizing stacking and focus—comes from that prior w
 What this means is that developer using `no-frills-ui` component will never have to worry about the `z-index`.
 All `no-frills-ui`'s stackable components uses this layer manager to get their layer.
 
-Remember that “delete button inside a drawer” from the start? By this point, you have all the pieces:
-a Button that won’t accidentally submit forms, a Dialog that can confirm via a simple await confirmDialog.current.show(...),
+## What did we achieve?
+
+Remember that "delete button inside a drawer" from the start? By this point, you have all the pieces:
+a Button that won’t accidentally submit forms, a Dialog that can confirm via a simple `await confirmDialog.current.show()`,
 and a LayerManager that guarantees the dialog stacks correctly over the drawer.
 The point isn’t just how each component works in isolation, but how they combine into boring,
 predictable behavior in real UI flows.
@@ -571,16 +605,10 @@ generate the JSX for a button, a dialog, or even a drawer faster than any human�
 can see the bigger picture, choose the right semantics and patterns, and design an API that solves
 the problem with fewer lines of code, fewer bugs, and better long-term maintainability.
 
-Under the hood, NFUI also:
-
-- Uses GitHub Actions to run tests and lint on every PR.
-- Uses tag-protected releases, so only admins can publish versions.
-- Publishes Storybook to GitHub Pages and archives docs per version.
-
 ## Where to explore further
 
 If you are interested then you can check out `no-frills-ui` [repository](https://github.com/pushkar8723/no-frills-ui) or
-skim through [the storybook doc](https://nfui.js.org)
+skim through [the storybook doc](https://nfui.js.org).
 
 If anything in this post feels off, unclear, or incomplete, or if you have another pattern you think belongs here, please leave a comment.
 Component design is nuanced, and catching mistakes or blind spots is much easier when more eyes (and more contexts) are involved.

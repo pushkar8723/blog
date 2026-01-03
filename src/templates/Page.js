@@ -155,11 +155,15 @@ PageTemplate.propTypes = {
     }).isRequired,
 };
 
-export function Head({ data: { mdx: post } }) {
+export function Head({ data: { mdx: post, site }, location }) {
+    const twitterCardImage = `${site.siteMetadata.siteUrl}${location.pathname}twitter-card.jpg`;
+
     return (
         <Seo
             title={post.frontmatter.title}
             description={post.frontmatter.description || post.excerpt}
+            twitterCard="summary_large_image"
+            image={twitterCardImage}
         />
     );
 }
@@ -176,6 +180,7 @@ export const pageQuery = graphql`
         site {
             siteMetadata {
                 title
+                siteUrl
                 author {
                     name
                 }

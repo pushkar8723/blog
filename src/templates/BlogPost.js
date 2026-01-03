@@ -17,6 +17,30 @@ const ArticleBody = styled.section.attrs({
     itemProp: 'articleBody',
 })`
     margin-top: 30px;
+
+    & p + ol,
+    & p + ul {
+        margin-top: -20px;
+    }
+
+    & li {
+        margin-bottom: 5px;
+    }
+
+    & li > ul,
+    & li > ol {
+        margin-top: 5px;
+        margin-bottom: 20px;
+    }
+
+    & h1 svg,
+    & h2 svg,
+    & h3 svg,
+    & h4 svg,
+    & h5 svg,
+    & h6 svg {
+        fill: currentColor;
+    }
 `;
 
 const DateContainer = styled.div`
@@ -103,11 +127,15 @@ function BlogPostTemplate({
     );
 }
 
-export function Head({ data: { mdx: post } }) {
+export function Head({ data: { mdx: post, site }, location }) {
+    const twitterCardImage = `${site.siteMetadata.siteUrl}${location.pathname}twitter-card.jpg`;
+
     return (
         <Seo
             title={post.frontmatter.title}
             description={post.frontmatter.description || post.excerpt}
+            twitterCard="summary_large_image"
+            image={twitterCardImage}
         />
     );
 }
@@ -123,6 +151,7 @@ export const pageQuery = graphql`
         site {
             siteMetadata {
                 title
+                siteUrl
                 author {
                     name
                 }

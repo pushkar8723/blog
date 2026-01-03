@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import styled from 'styled-components';
 import Scrollspy from 'react-scrollspy';
 import PropTypes from 'prop-types';
 
-const Container = styled.div`
+const Container = styled.section`
     @media only screen and (min-width: 1400px) {
         & {
             transform: translateX(100%);
@@ -59,11 +59,12 @@ const Container = styled.div`
 export default function TableOfContents(props) {
     const { items } = props;
     const [active, setActive] = useState();
+    const sectionId = useId();
 
     if (items) {
         return (
-            <Container>
-                <h4>Table of Contents</h4>
+            <Container aria-labelledby={`title-${sectionId}`}>
+                <h4 id={`title-${sectionId}`}>Table of Contents</h4>
                 <Scrollspy
                     items={items.map(item => item.url.substr(1))}
                     onUpdate={el => {
@@ -75,7 +76,10 @@ export default function TableOfContents(props) {
                     }}
                 >
                     {items.map(item => (
-                        <li className={item.url === active ? 'active' : ''}>
+                        <li
+                            key={item.url}
+                            className={item.url === active ? 'active' : ''}
+                        >
                             <a href={item.url}>{item.title}</a>
                         </li>
                     ))}

@@ -108,9 +108,10 @@ module.exports = {
                         options: {
                             titleFontSize: 96,
                             background: require.resolve(
-                                './content/assets/base.png'
+                                './content/assets/twitter-card.jpg'
                             ),
-                            fontColor: '#ffffff',
+                            fontColor: '#333333',
+                            fontStyle: 'sans-serif',
                         },
                     },
                 ],
@@ -222,5 +223,6 @@ module.exports = {
                 },
             },
         },
+        'gatsby-plugin-styled-components',
     ],
 };

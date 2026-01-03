@@ -1,14 +1,13 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
-import { Link, StaticQuery, graphql } from 'gatsby';
+import { Link, useStaticQuery, graphql } from 'gatsby';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faTwitter,
     faGithub,
     faLinkedinIn,
     faFacebook,
     faInstagram,
+    faXTwitter,
 } from '@fortawesome/free-brands-svg-icons';
 import { faCopyright, faRss } from '@fortawesome/free-solid-svg-icons';
 import styled, { createGlobalStyle } from 'styled-components';
@@ -123,6 +122,11 @@ function Layout({ location, title, children }) {
     const isRootPath = location.pathname === rootPath;
     let header;
 
+    const data = useStaticQuery(pageQuery);
+    const { twitter, github, linkedin, facebook, instagram } =
+        data.site.siteMetadata.social;
+    const pages = data.pages.edges;
+
     if (isRootPath) {
         header = (
             <h1 className="main-heading">
@@ -138,173 +142,146 @@ function Layout({ location, title, children }) {
     }
 
     return (
-        <StaticQuery
-            query={pageQuery}
-            render={data => {
-                const { twitter, github, linkedin, facebook, instagram } =
-                    data.site.siteMetadata.social;
-                const pages = data.pages.edges;
-                return (
-                    <>
-                        <GlobalStyle />
-                        <Helmet>
-                            {isRootPath ? (
-                                <meta name="twitter:card" content="summary" />
-                            ) : (
-                                [
-                                    <meta
-                                        name="twitter:card"
-                                        content="summary_large_image"
-                                    />,
-                                    <meta
-                                        name="twitter:image:src"
-                                        content={`${data.site.siteMetadata.siteUrl}${location.pathname}twitter-card.jpg`}
-                                    />,
-                                    <meta
-                                        name="og:image"
-                                        content={`${data.site.siteMetadata.siteUrl}${location.pathname}twitter-card.jpg`}
-                                    />,
-                                ]
-                            )}
-                        </Helmet>
-                        <div
-                            className="global-wrapper"
-                            data-is-root-path={isRootPath}
-                        >
-                            <header className="global-header">
-                                <HomeLink>{header}</HomeLink>
-                                <Navbar>
-                                    <Links>
-                                        {pages.map(({ node }) => (
-                                            <PageLink
-                                                key={node.id}
-                                                href={node.fields.slug}
-                                            >
-                                                {node.frontmatter.title}
-                                            </PageLink>
-                                        ))}
-                                    </Links>
-                                </Navbar>
-                            </header>
-                            <main>{children}</main>
-                            <Footer>
-                                <Social>
-                                    {facebook && (
-                                        <>
-                                            <a
-                                                href={`https://facebook.com/${facebook}`}
-                                                target="_blank"
-                                                rel="noreferrer noopener"
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faFacebook}
-                                                    style={{
-                                                        width: '16px',
-                                                        height: '16px',
-                                                    }}
-                                                />
-                                            </a>
-                                            {' | '}
-                                        </>
-                                    )}
-                                    {instagram && (
-                                        <>
-                                            <a
-                                                href={`https://instagram.com/${instagram}`}
-                                                target="_blank"
-                                                rel="noreferrer noopener"
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faInstagram}
-                                                    style={{
-                                                        width: '16px',
-                                                        height: '16px',
-                                                    }}
-                                                />
-                                            </a>
-                                            {' | '}
-                                        </>
-                                    )}
-                                    {twitter && (
-                                        <>
-                                            <a
-                                                href={`https://twitter.com/${twitter}`}
-                                                target="_blank"
-                                                rel="noreferrer noopener"
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faTwitter}
-                                                    style={{
-                                                        width: '16px',
-                                                        height: '16px',
-                                                    }}
-                                                />
-                                            </a>
-                                            {' | '}
-                                        </>
-                                    )}
-                                    {github && (
-                                        <>
-                                            <a
-                                                href={`https://github.com/${github}`}
-                                                target="_blank"
-                                                rel="noreferrer noopener"
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faGithub}
-                                                    style={{
-                                                        width: '16px',
-                                                        height: '16px',
-                                                    }}
-                                                />
-                                            </a>
-                                            {' | '}
-                                        </>
-                                    )}
-                                    {linkedin && (
-                                        <>
-                                            <a
-                                                href={`https://www.linkedin.com/${linkedin}`}
-                                                target="_blank"
-                                                rel="noreferrer noopener"
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faLinkedinIn}
-                                                    style={{
-                                                        width: '16px',
-                                                        height: '16px',
-                                                    }}
-                                                />
-                                            </a>
-                                            {' | '}
-                                        </>
-                                    )}
-                                    <a href="/rss.xml">
-                                        <FontAwesomeIcon
-                                            icon={faRss}
-                                            style={{
-                                                width: '16px',
-                                                height: '16px',
-                                            }}
-                                        />
-                                    </a>
-                                </Social>
-                                <div>
+        <>
+            <GlobalStyle key="global-style" />
+            <div
+                key="content-wrapper"
+                className="global-wrapper"
+                data-is-root-path={isRootPath}
+            >
+                <header className="global-header" role="banner">
+                    <HomeLink>{header}</HomeLink>
+                    <Navbar role="navigation" aria-label="Main Navigation">
+                        <Links>
+                            {pages.map(({ node }) => (
+                                <PageLink key={node.id} href={node.fields.slug}>
+                                    {node.frontmatter.title}
+                                </PageLink>
+                            ))}
+                        </Links>
+                    </Navbar>
+                </header>
+                <main>{children}</main>
+                <Footer>
+                    <Social>
+                        {facebook && (
+                            <>
+                                <a
+                                    href={`https://facebook.com/${facebook}`}
+                                    target="_blank"
+                                    rel="noreferrer noopener"
+                                    aria-label="facebook"
+                                >
                                     <FontAwesomeIcon
-                                        icon={faCopyright}
+                                        icon={faFacebook}
                                         style={{
                                             width: '16px',
                                             height: '16px',
                                         }}
-                                    />{' '}
-                                    {new Date().getFullYear()}
-                                </div>
-                            </Footer>
-                        </div>
-                    </>
-                );
-            }}
-        />
+                                    />
+                                </a>
+                                {' | '}
+                            </>
+                        )}
+                        {instagram && (
+                            <>
+                                <a
+                                    href={`https://instagram.com/${instagram}`}
+                                    target="_blank"
+                                    rel="noreferrer noopener"
+                                    aria-label="instagram"
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faInstagram}
+                                        style={{
+                                            width: '16px',
+                                            height: '16px',
+                                        }}
+                                    />
+                                </a>
+                                {' | '}
+                            </>
+                        )}
+                        {twitter && (
+                            <>
+                                <a
+                                    href={`https://x.com/${twitter}`}
+                                    target="_blank"
+                                    rel="noreferrer noopener"
+                                    aria-label="X (formerly twitter)"
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faXTwitter}
+                                        style={{
+                                            width: '16px',
+                                            height: '16px',
+                                        }}
+                                    />
+                                </a>
+                                {' | '}
+                            </>
+                        )}
+                        {github && (
+                            <>
+                                <a
+                                    href={`https://github.com/${github}`}
+                                    target="_blank"
+                                    rel="noreferrer noopener"
+                                    aria-label="github"
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faGithub}
+                                        style={{
+                                            width: '16px',
+                                            height: '16px',
+                                        }}
+                                    />
+                                </a>
+                                {' | '}
+                            </>
+                        )}
+                        {linkedin && (
+                            <>
+                                <a
+                                    href={`https://www.linkedin.com/${linkedin}`}
+                                    target="_blank"
+                                    rel="noreferrer noopener"
+                                    aria-label="linkedin"
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faLinkedinIn}
+                                        style={{
+                                            width: '16px',
+                                            height: '16px',
+                                        }}
+                                    />
+                                </a>
+                                {' | '}
+                            </>
+                        )}
+                        <a href="/rss.xml" aria-label="rss">
+                            <FontAwesomeIcon
+                                icon={faRss}
+                                style={{
+                                    width: '16px',
+                                    height: '16px',
+                                }}
+                            />
+                        </a>
+                    </Social>
+                    <div>
+                        <FontAwesomeIcon
+                            icon={faCopyright}
+                            style={{
+                                width: '16px',
+                                height: '16px',
+                            }}
+                        />{' '}
+                        {new Date().getFullYear()}
+                    </div>
+                </Footer>
+            </div>
+        </>
     );
 }
 

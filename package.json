@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@fontsource-variable/montserrat": "^5.0.17",
+    "@fontsource-variable/nunito-sans": "^5.2.7",
     "@fontsource/merriweather": "^5.0.8",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",

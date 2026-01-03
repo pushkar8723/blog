@@ -17,6 +17,30 @@ const ArticleBody = styled.section.attrs({
     itemProp: 'articleBody',
 })`
     margin-top: 30px;
+
+    & p + ol,
+    & p + ul {
+        margin-top: -20px;
+    }
+
+    & li {
+        margin-bottom: 5px;
+    }
+
+    & li > ul,
+    & li > ol {
+        margin-top: 5px;
+        margin-bottom: 20px;
+    }
+
+    & h1 svg,
+    & h2 svg,
+    & h3 svg,
+    & h4 svg,
+    & h5 svg,
+    & h6 svg {
+        fill: currentColor;
+    }
 `;
 
 const DateContainer = styled.div`

@@ -1730,6 +1730,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource-variable/nunito-sans@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@fontsource-variable/nunito-sans@npm:5.2.7"
+  checksum: 10c0/8fe9976895643a868eb1266d43ea3e9019498e06a45a9b53f23cfadfb087bd398b933240132aed8129786b95a27af94562b2c992ba3ada2f875c8e8d2394b6a6
+  languageName: node
+  linkType: hard
+
 "@fontsource/merriweather@npm:^5.0.8":
   version: 5.2.6
   resolution: "@fontsource/merriweather@npm:5.2.6"
@@ -4350,6 +4357,7 @@ __metadata:
     "@eslint/eslintrc": "npm:^3.3.1"
     "@eslint/js": "npm:^9.24.0"
     "@fontsource-variable/montserrat": "npm:^5.0.17"
+    "@fontsource-variable/nunito-sans": "npm:^5.2.7"
     "@fontsource/merriweather": "npm:^5.0.8"
     "@fortawesome/fontawesome-svg-core": "npm:^6.7.2"
     "@fortawesome/free-brands-svg-icons": "npm:^6.7.2"

@@ -6,8 +6,17 @@ keywords: 'UI design fundamentals, React component best practices, Semantic HTML
 featured: true
 ---
 
-> TL;DR: Let AI write the JSX, but you still need to understand the fundamentals—semantic HTML, defaults
-> like type="submit", ARIA, and keyboard behavior—if you want your components to be correct and reliable.
+> **Key Takeaways:** <br/>
+> Let AI write the JSX, but you still need to understand the fundamentals:
+> semantic HTML, defaults like type="submit", ARIA, and keyboard behavior
+> if you want your components to be correct and reliable.
+>
+> To make this concrete, I’ve also built a small learning project called [`no-frills-ui`](https://nfui.js.org),
+> and this post walks through the real problems it solves:
+>
+> - CSS-variable theming
+> - promise-based confirm dialogs
+> - centralized layer management
 
 Today, a few lines of prompt are enough to generate a working React component, a form, or even an entire page.
 Tools can scaffold JSX, props, hooks, and even ARIA attributes faster than any human can type.
@@ -88,7 +97,7 @@ Semantic HTML gives you a lot for free:
 </p>
 
 When you throw that away and replace everything with `<div>` plus `onClick`, you are re-implementing the browser.
-That means more code, more bugs, and more edge cases—exactly the kind of work that AI is bad at validating for you.
+That means more code, more bugs, and more edge cases. Exactly the kind of work that AI is bad at validating for you.
 
 ## Button – small component, big consequences
 
@@ -123,13 +132,13 @@ export default Button;
 
 Key decisions:
 
-1. Use real `<button>` — This gives you correct keyboard behavior, semantics, and form integration out of the box.
-2. Default `type="button"` — In HTML, the missing-value default for `<button>` is submit, which will submit the form
+1. Use real `<button>`: This gives you correct keyboard behavior, semantics, and form integration out of the box.
+2. Default `type="button"`: In HTML, the missing-value default for `<button>` is submit, which will submit the form
    when clicked if it’s inside a `<form>`. Defaulting to `type="button"` in your component prevents accidental form
    submissions and forces submit buttons to opt in.
-3. Prop spreading — Extending `ButtonHTMLAttributes` and spreading `...props` lets consumers use any native attribute:
+3. Prop spreading: Extending `ButtonHTMLAttributes` and spreading `...props` lets consumers use any native attribute:
    `disabled`, `aria-*`, `form`, `name`, etc.
-4. Ref forwarding — Consumers can focus the button programmatically or integrate it with other imperative APIs.
+4. Ref forwarding: Consumers can focus the button programmatically or integrate it with other imperative APIs.
 
 That `type="button"` decision is a good example of basics that AI won’t catch for you: it will happily generate a
 component that works in a Storybook story, but will fail in subtle ways once someone uses it inside a real form.
@@ -436,6 +445,10 @@ components, we need a significant amount of code to mimic the browser.
 
 ### Large lists – performance concerns creep in
 
+> "A large list would be required on an e-commerce site with 500+ brands in a filter dropdown or
+> an analytics dashboard with 10,000+ customer options and for other such use cases. Rendering all of
+> them at once makes page janky, keyboard navigation stutter, and the whole experience feel broken on lower-end devices."
+
 All the patterns above assume a reasonable number of options. Once you cross a few hundred items,
 a naive implementation starts to hurt:
 
@@ -489,7 +502,7 @@ Testing & Docs:
 ## Putting it all together: `no-frills-ui`
 
 [No Frills UI](https://nfui.js.org) is a small React component library that I built as a learning project to apply these principles
-in a real codebase—and to treat even a "toy" library with production discipline (tests, docs, CI, releases).
+in a real codebase, and to treat even a "toy" library with production discipline (tests, docs, CI, releases).
 
 Following are few UI development challenges that I solved while building this library.
 
@@ -586,7 +599,7 @@ NFUI uses a LayerManager service that:
 
 This idea was inspired by [`react-layers-manager`](https://github.com/giuseppeg/react-layers-manager),
 which centralizes layer and portal management to avoid ad-hoc `z-index` wars. NFUI’s version is smaller and customized,
-but the core concept—centralizing stacking and focus—comes from that prior work.
+but the core concept, centralizing stacking and focus, comes from that prior work.
 
 What this means is that developer using `no-frills-ui` component will never have to worry about the `z-index`.
 All `no-frills-ui` stackable components uses this layer manager to get their layer.
@@ -601,7 +614,7 @@ predictable behavior in real UI flows.
 
 This is what a well-engineered set of components enables: each piece does one thing well,
 and they compose cleanly to solve a real UI problem with very little glue code. AI can absolutely
-generate the JSX for a button, a dialog, or even a drawer faster than any human—but only a human
+generate the JSX for a button, a dialog, or even a drawer faster than any human. But only a human
 can see the bigger picture, choose the right semantics and patterns, and design an API that solves
 the problem with fewer lines of code, fewer bugs, and better long-term maintainability.
 

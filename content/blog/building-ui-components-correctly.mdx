@@ -8,7 +8,7 @@ featured: true
 
 > **Key Takeaways:** <br/>
 > Let AI write the JSX, but you still need to understand the fundamentals:
-> semantic HTML, defaults like type="submit", ARIA, and keyboard behavior
+> semantic HTML, defaults like `type="submit"`, ARIA, and keyboard behavior
 > if you want your components to be correct and reliable.
 >
 > To make this concrete, I’ve also built a small learning project called [`no-frills-ui`](https://nfui.js.org),
@@ -199,7 +199,7 @@ Why this works well:
 - Label is automatically associated with the input when provided.
 - Uses a real `<input>`, so you get native events, validation, autofill, and password manager integration.
 - Uses id plus `aria-describedby` to connect the error message to the input. Screen readers read them together.
-- Uses role="alert" so new error messages are announced as soon as they appear.
+- Uses `role="alert"` so new error messages are announced as soon as they appear.
 
 With form libraries like React Hook Form, this component plugs in with almost no extra work.
 
@@ -533,7 +533,7 @@ and lets consumers plug in whichever i18n system they already use.
 
 A common issue I have seen across projects is when we need to confirm a delete action. Often a modal is shown for
 this confirmation and then the delete API is called. For this, an `open` state is maintained for the modal. Inside
-the modal click handlers for `confirm` and `cancel` button is wired. Finally a `onConfirm` and `onClose` callbacks
+the modal click handlers for `confirm` and `cancel` buttons are wired. Finally a `onConfirm` and `onClose` callbacks
 are exposed as prop. When this pattern is repeated in multiple places, it leads to major code bloat.
 
 Some of this can be moved to a reusable `ConfirmDialog` component. However, you still need to maintain `open`, `onConfirm`

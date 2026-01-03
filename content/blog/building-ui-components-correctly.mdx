@@ -1,6 +1,6 @@
 ---
 title: 'Building UI Components Correctly in the Age of AI'
-date: '2026-01-05'
+date: '2026-01-04'
 description: 'What I learned as a frontend engineer by doing things wrong.'
 keywords: 'UI design fundamentals, React component best practices, Semantic HTML, Accessible components'
 featured: true
@@ -12,13 +12,13 @@ featured: true
 Today, a few lines of prompt are enough to generate a working React component, a form, or even an entire page.
 Tools can scaffold JSX, props, hooks, and even ARIA attributes faster than any human can type.
 That makes it very tempting to treat UI development as a copy–paste and glue exercise.
-Yet the basics still matter, because the hardest bugs are the ones where the code looks fine.
+Yet the basics still matter, because **the hardest bugs are the ones where the code looks fine**.
 Consider the humble `<button>`. In HTML, a `<button>` without an explicit type defaults to `type="submit"`
 when it’s inside a form. Click it, and the browser will happily submit the form, even if your intent was
 "just close the dialog", "open a drawer", or "go to the next step." This isn’t a React quirk or a library bug;
 it’s the platform’s default behavior.
 
-AI generator can spit out:
+AI tool can spit out:
 
 ```tsx
 <button onClick={handleClick}>Next</button>
@@ -37,13 +37,13 @@ debugging this turns into superstition rather than understanding.
   />
 </p>
 
-In this post, I aim to go through few of those fundamentals, the things AI can help you type, but not truly reason about for you.
+In this post, I want to go through a few of those fundamentals, the things AI can help you type, but not truly reason about for you.
 Creating a component seems simple: render some JSX, add some CSS, ship it. But in practice, even a "simple"
 button or input carries surprising complexity.
 
-## Lets take an example
+## Let's take an example
 
-Consider a seemingly trivial task: "Add delete functionality for list items which is being rendered in a drawer".
+Consider a seemingly trivial task: "Add delete functionality for list items that are rendered in a drawer".
 For this, the most basic component would be a button. This button needs to:
 
 - Be reusable: the same button component must work in different contexts: a table, a card, a modal, a sidebar.
@@ -71,7 +71,7 @@ When building components, you are not just building visual elements. You are bui
 developers will depend on. A component that works perfectly in isolation might break in unexpected ways when combined
 with others, when rendered on the server, or when used by keyboard-only users.
 
-Semantic HTML gives you for free:
+Semantic HTML gives you a lot for free:
 
 - Keyboard navigation (Tab, Enter, Space) for buttons, inputs, links.
 - Screen reader semantics (a `<button>` is announced as a button, a `<select>` as a combo box).
@@ -194,7 +194,7 @@ Why this works well:
 
 With form libraries like React Hook Form, this component plugs in with almost no extra work.
 
-## Dropdown / Combobox – native first, custom when needed
+## Dropdown – Native First, Custom When Needed
 
 Dropdowns are where component complexity spikes. There are really three levels:
 
@@ -432,7 +432,7 @@ This is a **select-only combobox**, which matches a lot of "styled select" requi
 staying close to the ARIA Authoring Practices.
 
 As you can see, the moment we move away from native
-component, we need to add significant amount of code to mimic browser.
+components, we need a significant amount of code to mimic the browser.
 
 ### Large lists – performance concerns creep in
 
@@ -456,7 +456,7 @@ I created.
 
 ## Component checklist
 
-To summarize, following are the things that I consider while creating a component.
+Here’s a quick checklist you can use the next time you create or review a component.
 
 Design:
 
@@ -519,14 +519,14 @@ and lets consumers plug in whichever i18n system they already use.
 ### Dialogs with a promise-based API
 
 A common issue I have seen across projects is when we need to confirm a delete action. Often a modal is shown for
-this confirmation and then the delete API is called. For this an `open` state is maintained for the modal. Inside
+this confirmation and then the delete API is called. For this, an `open` state is maintained for the modal. Inside
 the modal click handlers for `confirm` and `cancel` button is wired. Finally a `onConfirm` and `onClose` callbacks
-are exposed as prop. This when done at multiple places, leads to major code bloat.
+are exposed as prop. When this pattern is repeated in multiple places, it leads to major code bloat.
 
 Some of this can be moved to a reusable `ConfirmDialog` component. However, you still need to maintain `open`, `onConfirm`
 and `onClose` callbacks. Not to mention, the delete code flow get fragmented into multiple callbacks.
 
-This is the issue with declarative approach. And so to solve this I took an imperative approach.
+This is the issue with a purely declarative approach. And so to solve this I took an imperative approach.
 
 Instead of wiring `isOpen`, `onConfirm`, `onClose` state everywhere, NFUI exposes an imperative API:
 
@@ -589,7 +589,7 @@ which centralizes layer and portal management to avoid ad-hoc `z-index` wars. NF
 but the core concept—centralizing stacking and focus—comes from that prior work.
 
 What this means is that developer using `no-frills-ui` component will never have to worry about the `z-index`.
-All `no-frills-ui`'s stackable components uses this layer manager to get their layer.
+All `no-frills-ui` stackable components uses this layer manager to get their layer.
 
 ## What did we achieve?
 

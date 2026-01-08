@@ -55,6 +55,15 @@ function PageTemplate({
                 <hr />
                 <footer>
                     <Bio />
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <iframe
+                            title="Subscribe to my blog"
+                            src="https://pushkar8723.substack.com/embed"
+                            width="480"
+                            height="150"
+                            style={{ border: 'none', borderRadius: '5px' }}
+                        />
+                    </div>
                 </footer>
             </article>
             <nav className="blog-post-nav">
